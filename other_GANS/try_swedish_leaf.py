@@ -23,7 +23,7 @@ def load_swedish_leaf_in_right_format(size):
     return np.array(images), np.array(labels)
 
 
-size = (32, 32,)
+size = (64, 64,)
 (x, y) = load_swedish_leaf_in_right_format(size)
 
 # Xtrain = [images, height, width, channels]

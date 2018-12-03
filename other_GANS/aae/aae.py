@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+
 class AdversarialAutoencoder():
     def __init__(self):
         self.img_rows = 28
@@ -68,8 +69,8 @@ class AdversarialAutoencoder():
         mu = Dense(self.latent_dim)(h)
         log_var = Dense(self.latent_dim)(h)
         latent_repr = merge([mu, log_var],
-                mode=lambda p: p[0] + K.random_normal(K.shape(p[0])) * K.exp(p[1] / 2),
-                output_shape=lambda p: p[0])
+                            mode=lambda p: p[0] + K.random_normal(K.shape(p[0])) * K.exp(p[1] / 2),
+                            output_shape=lambda p: p[0])
 
         return Model(img, latent_repr)
 
