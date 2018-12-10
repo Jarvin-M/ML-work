@@ -1,5 +1,3 @@
-# Deep MNIST architecture for object recognition
-
 ### Description of files in the repository
 
 * network.py -  contains an implementation of the network architecture and can be tested by running python network.py. If the architecture is correctly configured then this should run smoothly, else it will throw an error. 
