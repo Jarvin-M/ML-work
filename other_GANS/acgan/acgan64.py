@@ -217,7 +217,7 @@ class ACGAN():
                 axs[i, j].imshow(gen_imgs[cnt])
                 axs[i, j].axis('off')
                 cnt += 1
-        fig.savefig("images/%d.png" % epoch)
+        fig.savefig("images/%d_64.png" % epoch)
         plt.close()
 
     def save_model(self):
