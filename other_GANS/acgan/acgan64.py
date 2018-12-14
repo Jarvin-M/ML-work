@@ -145,8 +145,8 @@ class ACGAN():
 
         # Load the dataset
         #(X_train, y_train), (_, _) = mnist.load_data()
-        X_train = np.load('../datasets/swedish_leaf64x64pix_images.npy')
-        y_train = np.load('../datasets/swedish_leaf64x64pix_labels.npy')
+        X_train = np.load('../datasets/np/swedish_leaf64x64pix_train_images.npy')
+        y_train = np.load('../datasets/np/swedish_leaf64x64pix_train_labels.npy')
 
         # Configure inputs
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
