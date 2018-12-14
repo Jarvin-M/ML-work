@@ -79,4 +79,4 @@ alexnet.summary()
 alexnet.compile(loss='sparse_categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
 
 # Train
-alexnet.fit(x_train, y_train, epochs=4, verbose=1,validation_data=(x_test,y_test), shuffle=True)
+alexnet.fit(x_train, y_train, epochs=50, verbose=1,validation_data=(x_test,y_test), shuffle=True)
