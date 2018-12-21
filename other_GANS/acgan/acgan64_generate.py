@@ -30,7 +30,7 @@ class ImageGenerator:
                 axs[i, j].imshow(gen_imgs[cnt])
                 axs[i, j].axis('off')
                 cnt += 1
-        fig.savefig("images/{}_{}.png".format(self.model_name, image_class))
+        fig.savefig("shared_images/{}_{}.png".format(self.model_name, image_class))
         plt.close()
 
     def load_model(self):
@@ -48,6 +48,6 @@ class ImageGenerator:
 
 
 if __name__ == '__main__':
-    image_generator = ImageGenerator("generator64_50000")
+    image_generator = ImageGenerator("generator64_28000")
     for image_class in range(14):
         image_generator.create_png_image_for_class(image_class, size=3)
