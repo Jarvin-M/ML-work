@@ -1,5 +1,7 @@
 from __future__ import print_function, division
 
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.engine.saving import model_from_json
