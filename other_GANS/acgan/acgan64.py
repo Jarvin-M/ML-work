@@ -7,8 +7,10 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D
 from keras.models import Sequential, Model
 from keras.optimizers import Adam
-
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import numpy as np
 
@@ -145,8 +147,8 @@ class ACGAN():
 
         # Load the dataset
         #(X_train, y_train), (_, _) = mnist.load_data()
-        X_train = np.load('../datasets/np/swedish_leaf64x64pix_train_images.npy')
-        y_train = np.load('../datasets/np/swedish_leaf64x64pix_train_labels.npy')
+        X_train = np.load('../datasets/swedish_np/swedish_leaf64x64pix_train_images.npy')
+        y_train = np.load('../datasets/swedish_np/swedish_leaf64x64pix_train_labels.npy')
 
         # Configure inputs
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
@@ -237,4 +239,4 @@ class ACGAN():
 
 if __name__ == '__main__':
     acgan = ACGAN()
-    acgan.train(epochs=28000, batch_size=32, sample_interval=200)
+    acgan.train(epochs=50000, batch_size=32, sample_interval=999)
