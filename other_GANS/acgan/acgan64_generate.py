@@ -48,6 +48,6 @@ class ImageGenerator:
 
 
 if __name__ == '__main__':
-    image_generator = ImageGenerator("generator64_28000")
+    image_generator = ImageGenerator("generator64_50000")
     for image_class in range(14):
         image_generator.create_png_image_for_class(image_class, size=3)
