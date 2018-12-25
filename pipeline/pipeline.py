@@ -1,8 +1,11 @@
 from __future__ import print_function, division
 
+import random
+
 import keras
 import matplotlib
 import numpy as np
+from datetime import datetime
 from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers import Embedding, ZeroPadding2D
 from keras.layers import Input, Reshape, multiply
