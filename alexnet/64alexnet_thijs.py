@@ -128,7 +128,7 @@ class AlexNet:
 np.random.seed(1000)
 
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/')
-alexnet.train_network(epochs=3)
+alexnet.train_network(epochs=200)
 # filepath = "data/alexnet-cnn.hdf5"
 
 # Checkpoint storing the best checkpoint with improvements for the val_acc
