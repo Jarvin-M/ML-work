@@ -10,8 +10,22 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
+def load_data(base_path):
+    x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
+    x_train = (x_train.astype(np.float32) - 127.5) / 127.5
+    y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path)) - 1
+    x_train = np.concatenate((x_train, np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path))))
+    y_train = np.concatenate((y_train, np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path))))
+
+    x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
+    y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path)) - 1
+
+    return (x_train, y_train), (x_test, y_test)
+
+
 class AlexNet:
-    def __init__(self, data_base_path='data/data', lr=0.00001):
+    def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, folder=''):
+        self.folder = folder
         self.lr = lr
         # build and compile the network
         self.network = self.build_network()
@@ -19,7 +33,10 @@ class AlexNet:
         self.network.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # load data
-        (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data(data_base_path)
+        self.x_train = x_train
+        self.y_train = y_train
+        self.x_test = x_test
+        self.y_test = y_test
 
         # create a generator to transform the pictures
         self.datagen = ImageDataGenerator(
@@ -93,17 +110,6 @@ class AlexNet:
 
         return alexnet
 
-    def load_data(self, base_path):
-        x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
-        y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
-        x_train = np.concatenate((x_train, np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path))))
-        y_train = np.concatenate((y_train, np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path))))
-
-        x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
-        y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path))-1
-
-        return (x_train, y_train), (x_test, y_test)
-
     def train_network(self, epochs, create_plots=True, save_model=True):
         history = self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=2,
                                    validation_data=(self.x_test, self.y_test), shuffle=True)
@@ -111,6 +117,7 @@ class AlexNet:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
             self.save_model(epochs)
+        return history
 
     def train_network_with_generator(self, epochs, create_plots=True, save_model=True):
         history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
@@ -121,6 +128,7 @@ class AlexNet:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
             self.save_model(epochs)
+        return history
 
     def plot_accuracy_and_loss(self, history, epochs):
         # summarize history for accuracy
@@ -130,7 +138,7 @@ class AlexNet:
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("plots/alexnet_accuracy_{}_epochs_{}.png".format(epochs, self.lr))
+        plt.savefig("{}plots/alexnet_accuracy_{}_epochs_{}.png".format(self.folder, epochs, self.lr))
         plt.close()
         # summarize history for loss
         plt.plot(history.history['loss'])
@@ -139,7 +147,7 @@ class AlexNet:
         plt.ylabel('loss')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("plots/alexnet_loss_{}_epochs_{}.png".format(epochs, self.lr))
+        plt.savefig("{}plots/alexnet_loss_{}_epochs_{}.png".format(self.folder, epochs, self.lr))
         plt.close()
 
     def save_model(self, epochs):
@@ -158,12 +166,16 @@ class AlexNet:
         plt.close()
 
 
-#np.random.seed(1000)
+if __name__ == '__main__':
+    # np.random.seed(1000)
 
+    epochs = 500
+    lr = 0.00001  # 0.000001 best till now
+    (x_train, y_train), (x_test, y_test) = load_data(base_path='../other_GANS/datasets/swedish_np/')
 
-epochs = 500
-lr = 0.00001  # 0.000001 best till now
-alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
+    alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr)
 
-alexnet.train_network_with_generator(epochs=epochs)
-#alexnet.sample_transformed_x()
+    print(alexnet.x_train.shape)
+    print(alexnet.x_train[0])
+    #alexnet.train_network_with_generator(epochs=epochs)
+    #alexnet.sample_transformed_x()
