@@ -21,10 +21,10 @@ class AlexNet:
         # load data
         (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data(data_base_path)
 
-        # create a generator
+        # create a generator to transform the pictures
         self.datagen = ImageDataGenerator(
-            zoom_range=0.2,  # randomly zoom into images
-            rotation_range=8,  # randomly rotate images in the range (degrees, 0 to 180)
+            zoom_range=0.1,  # randomly zoom into images
+            rotation_range=5,  # randomly rotate images in the range (degrees, 0 to 180)
             width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
             height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=True,  # randomly flip images
@@ -153,7 +153,7 @@ class AlexNet:
 np.random.seed(1000)
 
 
-epochs = 300
+epochs = 500
 lr = 0.00001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
