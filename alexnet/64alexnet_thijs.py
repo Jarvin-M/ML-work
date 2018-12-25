@@ -154,7 +154,7 @@ np.random.seed(1000)
 
 
 epochs = 500
-lr = 0.00001  # 0.000001 best till now
+lr = 0.000001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
 alexnet.train_network_with_generator(epochs=epochs)
