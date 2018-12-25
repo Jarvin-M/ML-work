@@ -94,8 +94,10 @@ class AlexNet:
         return alexnet
 
     def load_data(self, base_path):
-        x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
-        y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
+        #x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
+        #y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
+        x_train = np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path))
+        y_train = np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path))
 
         x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
         y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path))-1
@@ -159,7 +161,7 @@ class AlexNet:
 #np.random.seed(1000)
 
 
-epochs = 500
+epochs = 3
 lr = 0.00001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
