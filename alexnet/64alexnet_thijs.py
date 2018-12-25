@@ -96,8 +96,8 @@ class AlexNet:
     def load_data(self, base_path):
         x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
         y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
-        x_train = np.concatenate(x_train, np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path)))
-        y_train = np.concatenate(y_train, np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path)))
+        x_train = np.concatenate((x_train, np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path))))
+        y_train = np.concatenate((y_train, np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path))))
 
         x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
         y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path))-1
