@@ -3,8 +3,8 @@ import numpy as np
 import cv2
 from preprocess import preprocess, oneHot
 
-DATADIR = '../other_GANS/datasets/swedish_leaf/'
-NPY_STORAGE = '../other_GANS/datasets/swedish_leaf/np/'
+DATADIR = 'C:/Users/Parth Pankaj Tiwary/Desktop/swedish_leaf_classifier/swedish_data/'
+NPY_STORAGE = 'C:/Users/Parth Pankaj Tiwary/Desktop/swedish_leaf_classifier/swedish_data/numpy/'
 imHeight = 64
 imWidht  = 64
 
