@@ -175,7 +175,5 @@ if __name__ == '__main__':
 
     alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr)
 
-    print(alexnet.x_train.shape)
-    print(alexnet.x_train[0])
-    #alexnet.train_network_with_generator(epochs=epochs)
+    alexnet.train_network_with_generator(epochs=epochs)
     #alexnet.sample_transformed_x()
