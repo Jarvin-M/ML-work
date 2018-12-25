@@ -2,16 +2,19 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, Flatten,Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 import numpy as np
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 
 
 class AlexNet:
-    def __init__(self):
+    def __init__(self, data_base_path='data/data'):
         # build and compile the network
         self.network = self.build_network()
         self.network.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         # load data
-        (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data()
+        (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data(data_base_path)
 
     def build_network(self):
         # A sequential alexnet
@@ -75,24 +78,57 @@ class AlexNet:
 
         return alexnet
 
-    def load_data(self):
-        x_train = np.load('data/dataswedish_leaf64x64pix_train_images.npy')
-        y_train = np.load('data/dataswedish_leaf64x64pix_train_labels.npy')-1
+    def load_data(self, base_path):
+        x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
+        y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
 
-        x_test = np.load('data/dataswedish_leaf64x64pix_test_images.npy')
-        y_test = np.load('data/dataswedish_leaf64x64pix_test_labels.npy')-1
+        x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
+        y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path))-1
 
         return (x_train, y_train), (x_test, y_test)
 
-    def train_network(self, epochs):
-        self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=1,
-                         validation_data=(self.x_test, self.y_test), shuffle=True)
+    def train_network(self, epochs, create_plots=True, save_model=True):
+        history = self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=2,
+                                   validation_data=(self.x_test, self.y_test)) #, shuffle=True
+        if create_plots:
+            self.plot_accuracy_and_loss(history, epochs)
+        if save_model:
+            self.save_model(epochs)
+
+    def plot_accuracy_and_loss(self, history, epochs):
+        # summarize history for accuracy
+        plt.plot(history.history['acc'])
+        plt.plot(history.history['val_acc'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.savefig("plots/alexnet_accuracy_%d_epochs.png" % epochs)
+        plt.close()
+        # summarize history for loss
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.savefig("plots/alexnet_loss_%d_epochs.png" % epochs)
+        plt.close()
+
+    def save_model(self, epochs):
+        model_path = "saved_model/alexnet_%d_epochs.json" % epochs
+        weights_path = "saved_model/alexnet_%d_epochs_weights.hdf5" % epochs
+        options = {"file_arch": model_path,
+                    "file_weight": weights_path}
+        json_string = self.network.to_json()
+        open(options['file_arch'], 'w').write(json_string)
+        self.network.save_weights(options['file_weight'])
 
 
 np.random.seed(1000)
 
-alexnet = AlexNet()
-alexnet.train_network(epochs=100)
+alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/')
+alexnet.train_network(epochs=3)
 # filepath = "data/alexnet-cnn.hdf5"
 
 # Checkpoint storing the best checkpoint with improvements for the val_acc
