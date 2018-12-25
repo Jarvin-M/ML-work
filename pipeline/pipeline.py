@@ -82,7 +82,7 @@ class Pipeline:
         return gan.generate_dataset(size_per_class=int(x_train.shape[0]/15))
 
 
-Pipeline(gan_epochs=2, alexnet_epochs=2, alexnet_lr=0.0001)
+Pipeline(split=0.2, folder="run1/")
 
 # Split the data (0.2 - 0.8) ?
 # Train gan with training data
