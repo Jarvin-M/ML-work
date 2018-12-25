@@ -1,18 +1,16 @@
 from __future__ import print_function, division
 
-from keras.datasets import mnist
-from keras.layers import Input, Dense, Reshape, Flatten, Dropout, multiply
+import matplotlib
+import numpy as np
 from keras.layers import BatchNormalization, Activation, Embedding, ZeroPadding2D
+from keras.layers import Input, Dense, Reshape, Flatten, Dropout, multiply
 from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D
 from keras.models import Sequential, Model
 from keras.optimizers import Adam
-import matplotlib
+
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-#import matplotlib.pyplot as plt
-
-import numpy as np
 
 
 class ACGAN():
@@ -57,23 +55,6 @@ class ACGAN():
             optimizer=optimizer)
 
     def build_generator(self):
-
-        # model = Sequential()
-        #
-        # model.add(Dense(128 * 7 * 7, activation="relu", input_dim=self.latent_dim))
-        # model.add(Reshape((7, 7, 128)))
-        # model.add(BatchNormalization(momentum=0.8))
-        # model.add(UpSampling2D())
-        # model.add(Conv2D(128, kernel_size=3, padding="same"))
-        # model.add(Activation("relu"))
-        # model.add(BatchNormalization(momentum=0.8))
-        # model.add(UpSampling2D())
-        # model.add(Conv2D(64, kernel_size=3, padding="same"))
-        # model.add(Activation("relu"))
-        # model.add(BatchNormalization(momentum=0.8))
-        # model.add(Conv2D(self.channels, kernel_size=3, padding='same'))
-        # model.add(Activation("tanh"))
-
         model = Sequential()
 
         model.add(Dense(512 * 4 * 4, activation="relu", input_dim=self.latent_dim))
