@@ -1,3 +1,4 @@
+import keras
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, Flatten,Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
@@ -11,7 +12,8 @@ class AlexNet:
     def __init__(self, data_base_path='data/data'):
         # build and compile the network
         self.network = self.build_network()
-        self.network.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        optimizer = keras.optimizers.SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False)
+        self.network.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # load data
         (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data(data_base_path)
@@ -128,7 +130,7 @@ class AlexNet:
 np.random.seed(1000)
 
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/')
-alexnet.train_network(epochs=200)
+alexnet.train_network(epochs=50)
 # filepath = "data/alexnet-cnn.hdf5"
 
 # Checkpoint storing the best checkpoint with improvements for the val_acc
