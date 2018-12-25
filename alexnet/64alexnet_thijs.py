@@ -94,10 +94,10 @@ class AlexNet:
         return alexnet
 
     def load_data(self, base_path):
-        #x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
-        #y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
-        x_train = np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path))
-        y_train = np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path))
+        x_train = np.load('{}swedish_leaf64x64pix_train_images.npy'.format(base_path))
+        y_train = np.load('{}swedish_leaf64x64pix_train_labels.npy'.format(base_path))-1
+        x_train = np.concatenate(x_train, np.load('{}swedish_leaf_generator64_50000_2_images.npy'.format(base_path)))
+        y_train = np.concatenate(y_train, np.load('{}swedish_leaf_generator64_50000_2_labels.npy'.format(base_path)))
 
         x_test = np.load('{}swedish_leaf64x64pix_test_images.npy'.format(base_path))
         y_test = np.load('{}swedish_leaf64x64pix_test_labels.npy'.format(base_path))-1
@@ -106,7 +106,7 @@ class AlexNet:
 
     def train_network(self, epochs, create_plots=True, save_model=True):
         history = self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=2,
-                                   validation_data=(self.x_test, self.y_test)) #, shuffle=True
+                                   validation_data=(self.x_test, self.y_test), shuffle=True)
         if create_plots:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
@@ -116,7 +116,7 @@ class AlexNet:
         history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
                                              steps_per_epoch=int(np.ceil(self.x_train.shape[0] / float(32))),
                                              epochs=epochs, verbose=2,
-                                             validation_data=(self.x_test, self.y_test)) #, shuffle=True
+                                             validation_data=(self.x_test, self.y_test), shuffle=True)
         if create_plots:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
