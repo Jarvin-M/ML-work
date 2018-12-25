@@ -114,7 +114,7 @@ class AlexNet:
 
     def train_network_with_generator(self, epochs, create_plots=True, save_model=True):
         history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
-                                             steps_per_epoch=int(np.ceil(self.x_train.shape[0] / float(32))),
+                                             steps_per_epoch=int(np.ceil(900 / float(32))),
                                              epochs=epochs, verbose=2,
                                              validation_data=(self.x_test, self.y_test), shuffle=True)
         if create_plots:
