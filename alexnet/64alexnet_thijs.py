@@ -11,9 +11,11 @@ import matplotlib.pyplot as plt
 
 
 class AlexNet:
-    def __init__(self, data_base_path='data/data', optimizer='adam'):
+    def __init__(self, data_base_path='data/data', lr=0.000001):
+        self.lr = lr
         # build and compile the network
         self.network = self.build_network()
+        optimizer = keras.optimizers.Adam(lr=self.lr)
         self.network.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # load data
@@ -109,8 +111,10 @@ class AlexNet:
             self.save_model(epochs)
 
     def train_network_with_generator(self, epochs, create_plots=True, save_model=True):
-        history = self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=2,
-                                   validation_data=(self.x_test, self.y_test)) #, shuffle=True
+        history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
+                                             steps_per_epoch=int(np.ceil(self.x_train.shape[0] / float(32))),
+                                             epochs=epochs, verbose=2,
+                                             validation_data=(self.x_test, self.y_test)) #, shuffle=True
         if create_plots:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
@@ -120,7 +124,7 @@ class AlexNet:
         # summarize history for accuracy
         plt.plot(history.history['acc'])
         plt.plot(history.history['val_acc'])
-        plt.title('model accuracy')
+        plt.title('model accuracy %.7f' % self.lr)
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
@@ -129,7 +133,7 @@ class AlexNet:
         # summarize history for loss
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
-        plt.title('model loss')
+        plt.title('model loss %.7f' % self.lr)
         plt.ylabel('loss')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
@@ -149,16 +153,8 @@ class AlexNet:
 np.random.seed(1000)
 
 
-epochs = 200
-lr = 0.000001
-decay = lr/epochs
-optimizer = keras.optimizers.Adam(lr=lr, decay=decay)
-alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', optimizer=optimizer)
+epochs = 300
+lr = 0.000001  # 0.000001 best till now
+alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
-alexnet.train_network(epochs=epochs)
-# filepath = "data/alexnet-cnn.hdf5"
-
-# Checkpoint storing the best checkpoint with improvements for the val_acc
-# checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-
-# Train
+alexnet.train_network_with_generator(epochs=epochs)
