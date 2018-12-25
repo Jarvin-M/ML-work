@@ -1,5 +1,7 @@
-
+%%time
 import keras
+from keras.callbacks import ModelCheckpoint
+from keras import optimizers
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, Flatten,Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
@@ -76,7 +78,14 @@ alexnet.add(Activation('softmax'))
 alexnet.summary()
 
 # Compile 
+# sgd = optimizers.SGD(lr=0.01, decay=0.0, momentum=0.1, nesterov=False)
+# model.compile(loss='mean_squared_error', optimizer=)
 alexnet.compile(loss='sparse_categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
 
+filepath = "data/alexnet-cnn.hdf5"
+
+# Chepoint storing the best checkpoint with improvements for the val_acc
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+
 # Train
-alexnet.fit(x_train, y_train, epochs=50, verbose=1,validation_data=(x_test,y_test), shuffle=True)
+alexnet.fit(x_train, y_train, epochs=4, verbose=1, validation_data=(x_test,y_test), shuffle=True, callbacks=[checkpoint])
