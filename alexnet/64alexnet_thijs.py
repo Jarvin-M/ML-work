@@ -9,10 +9,9 @@ import matplotlib.pyplot as plt
 
 
 class AlexNet:
-    def __init__(self, data_base_path='data/data'):
+    def __init__(self, data_base_path='data/data', optimizer='adam'):
         # build and compile the network
         self.network = self.build_network()
-        optimizer = keras.optimizers.SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False)
         self.network.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # load data
@@ -129,8 +128,13 @@ class AlexNet:
 
 np.random.seed(1000)
 
-alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/')
-alexnet.train_network(epochs=50)
+
+epochs = 300
+lr = 0.01
+optimizer = keras.optimizers.Adam(lr=lr, decay=lr/(epochs*1.2))
+alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', optimizer=optimizer)
+
+alexnet.train_network(epochs=epochs)
 # filepath = "data/alexnet-cnn.hdf5"
 
 # Checkpoint storing the best checkpoint with improvements for the val_acc
