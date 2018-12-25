@@ -4,6 +4,8 @@ from keras.layers import Dense, Activation, Dropout, Flatten,Conv2D, MaxPooling2
 from keras.layers.normalization import BatchNormalization
 import numpy as np
 import matplotlib
+from keras_preprocessing.image import ImageDataGenerator
+
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
@@ -16,6 +18,16 @@ class AlexNet:
 
         # load data
         (self.x_train, self.y_train), (self.x_test, self.y_test) = self.load_data(data_base_path)
+
+        # create a generator
+        self.datagen = ImageDataGenerator(
+            zoom_range=0.2,  # randomly zoom into images
+            rotation_range=8,  # randomly rotate images in the range (degrees, 0 to 180)
+            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+            horizontal_flip=True,  # randomly flip images
+            vertical_flip=False  # randomly flip images
+        )
 
     def build_network(self):
         # A sequential alexnet
@@ -96,6 +108,14 @@ class AlexNet:
         if save_model:
             self.save_model(epochs)
 
+    def train_network_with_generator(self, epochs, create_plots=True, save_model=True):
+        history = self.network.fit(self.x_train, self.y_train, epochs=epochs, verbose=2,
+                                   validation_data=(self.x_test, self.y_test)) #, shuffle=True
+        if create_plots:
+            self.plot_accuracy_and_loss(history, epochs)
+        if save_model:
+            self.save_model(epochs)
+
     def plot_accuracy_and_loss(self, history, epochs):
         # summarize history for accuracy
         plt.plot(history.history['acc'])
@@ -130,8 +150,8 @@ np.random.seed(1000)
 
 
 epochs = 200
-lr = 0.00005
-decay = lr/(epochs*1.1)
+lr = 0.000001
+decay = lr/epochs
 optimizer = keras.optimizers.Adam(lr=lr, decay=decay)
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', optimizer=optimizer)
 
