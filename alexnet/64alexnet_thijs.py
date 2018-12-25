@@ -161,7 +161,7 @@ class AlexNet:
 #np.random.seed(1000)
 
 
-epochs = 3
+epochs = 500
 lr = 0.00001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
