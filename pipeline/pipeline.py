@@ -3,8 +3,8 @@ import random
 import numpy as np
 from datetime import datetime
 
-from other_GANS.acgan.acgan64_for_pipeline import ACGAN
-from alexnet.alexnet64_thijs import AlexNet
+from acgan64_for_pipeline import ACGAN
+from alexnet64_thijs import AlexNet
 
 
 def split_class(images, labels, split):
