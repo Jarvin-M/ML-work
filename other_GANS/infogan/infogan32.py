@@ -205,7 +205,7 @@ class INFOGAN:
             gen_imgs = self.generator.predict(gen_input)
             gen_imgs = 0.5 * gen_imgs + 0.5
             for j in range(r):
-                axs[j,i].imshow(gen_imgs[j,:,:,0], cmap='gray')
+                axs[j,i].imshow(gen_imgs[j])
                 axs[j,i].axis('off')
         fig.savefig("images/%d.png" % epoch)
         plt.close()
@@ -227,4 +227,4 @@ class INFOGAN:
 
 if __name__ == '__main__':
     infogan = INFOGAN()
-    infogan.train(epochs=50000, batch_size=128, sample_interval=50)
+    infogan.train(epochs=50000, batch_size=128, sample_interval=100)
