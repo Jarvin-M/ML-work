@@ -1,9 +1,9 @@
 import keras
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout, Flatten,Conv2D, MaxPooling2D
-from keras.layers.normalization import BatchNormalization
-import numpy as np
 import matplotlib
+import numpy as np
+from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
+from keras.models import Sequential
 from keras_preprocessing.image import ImageDataGenerator
 
 matplotlib.use('agg')
@@ -23,10 +23,10 @@ class AlexNet:
 
         # create a generator to transform the pictures
         self.datagen = ImageDataGenerator(
-            zoom_range=0.1,  # randomly zoom into images
+            zoom_range=0.05,  # randomly zoom into images
             rotation_range=5,  # randomly rotate images in the range (degrees, 0 to 180)
-            width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-            height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+            width_shift_range=0.07,  # randomly shift images horizontally (fraction of total width)
+            height_shift_range=0.07,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=True,  # randomly flip images
             vertical_flip=False  # randomly flip images
         )
@@ -149,12 +149,19 @@ class AlexNet:
         open(options['file_arch'], 'w').write(json_string)
         self.network.save_weights(options['file_weight'])
 
+    def sample_transformed_x(self):
+        transformed = self.datagen.random_transform(self.x_train[300])
+        plt.imshow(transformed)
+        plt.savefig('example.png')
+        plt.close()
 
-np.random.seed(1000)
+
+#np.random.seed(1000)
 
 
 epochs = 500
-lr = 0.000001  # 0.000001 best till now
+lr = 0.00001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
 alexnet.train_network_with_generator(epochs=epochs)
+#alexnet.sample_transformed_x()
