@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 class AlexNet:
-    def __init__(self, data_base_path='data/data', lr=0.000001):
+    def __init__(self, data_base_path='data/data', lr=0.00001):
         self.lr = lr
         # build and compile the network
         self.network = self.build_network()
@@ -124,20 +124,20 @@ class AlexNet:
         # summarize history for accuracy
         plt.plot(history.history['acc'])
         plt.plot(history.history['val_acc'])
-        plt.title('model accuracy %.7f' % self.lr)
+        plt.title('model accuracy {}'.format(self.lr))
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("plots/alexnet_accuracy_%d_epochs.png" % epochs)
+        plt.savefig("plots/alexnet_accuracy_{}_epochs_{}.png".format(epochs, self.lr))
         plt.close()
         # summarize history for loss
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
-        plt.title('model loss %.7f' % self.lr)
+        plt.title('model loss {}'.format(self.lr))
         plt.ylabel('loss')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("plots/alexnet_loss_%d_epochs.png" % epochs)
+        plt.savefig("plots/alexnet_loss_{}_epochs_{}.png".format(epochs, self.lr))
         plt.close()
 
     def save_model(self, epochs):
@@ -154,7 +154,7 @@ np.random.seed(1000)
 
 
 epochs = 300
-lr = 0.000001  # 0.000001 best till now
+lr = 0.00001  # 0.000001 best till now
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', lr=lr)
 
 alexnet.train_network_with_generator(epochs=epochs)
