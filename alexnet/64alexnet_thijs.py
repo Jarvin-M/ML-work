@@ -130,9 +130,9 @@ np.random.seed(1000)
 
 
 epochs = 200
-lr = 0.0001
+lr = 0.00005
 decay = lr/(epochs*1.1)
-optimizer = keras.optimizers.Adam(lr=lr)
+optimizer = keras.optimizers.Adam(lr=lr, decay=decay)
 alexnet = AlexNet(data_base_path='../other_GANS/datasets/swedish_np/', optimizer=optimizer)
 
 alexnet.train_network(epochs=epochs)
