@@ -109,7 +109,7 @@ class AlexNet:
         alexnet.add(BatchNormalization())
 
         # 3rd Dense Layer
-        alexnet.add(Dense(1000))
+        alexnet.add(Dense(1024))
         alexnet.add(Activation('relu'))
         alexnet.add(Dropout(0.4))
         alexnet.add(BatchNormalization())

@@ -71,7 +71,8 @@ class Pipeline:
     def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0'):
         """
         1. Split the data according to a float split
-        2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of training.
+        2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of
+           training.
         3. Generate extra training data (size of this data is equal to the size of the original training data)
         4. Train the AlexNet with only the original data and save plots and csv of the training process
         5. Train the AlexNet with original data and the generated extra training data

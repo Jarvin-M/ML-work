@@ -8,6 +8,7 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D
 from keras.models import Sequential, Model
 from keras.optimizers import Adam
+from keras_preprocessing.image import ImageDataGenerator
 
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -130,7 +131,16 @@ class ACGAN():
         return Model(img, [validity, label])
 
     def train(self, epochs, batch_size=128):
-        self.y_train = self.y_train.reshape(-1, 1)
+        self.y_train = self.y_train.reshape(-1, 1)  # [1, 0, 14] -> [[1], [0], [14]]
+
+        datagenerator = ImageDataGenerator(
+            rotation_range=4,  # randomly rotate images in the range (degrees, 0 to 180)
+            width_shift_range=0.02,  # randomly shift images horizontally (fraction of total width)
+            height_shift_range=0.02,  # randomly shift images vertically (fraction of total height)
+            horizontal_flip=True,  # randomly flip images
+            vertical_flip=False  # randomly flip images
+        )
+        datagen_iterator = datagenerator.flow(self.x_train, self.y_train, batch_size=batch_size)
 
         # Adversarial ground truths
         valid = np.ones((batch_size, 1))
@@ -142,9 +152,8 @@ class ACGAN():
             #  Train Discriminator
             # ---------------------
 
-            # Select a random batch of images
-            idx = np.random.randint(0, self.x_train.shape[0], batch_size)
-            imgs = self.x_train[idx]
+            # Select a random batch of images and corresponding labels
+            imgs, img_labels = datagen_iterator.next()
 
             # Sample noise as generator input
             noise = np.random.normal(0, 1, (batch_size, 100))
@@ -157,7 +166,6 @@ class ACGAN():
             gen_imgs = self.generator.predict([noise, sampled_labels])
 
             # Image labels. 0-14 if image is valid or 15 if it is generated (fake)
-            img_labels = self.y_train[idx]
             fake_labels = 15*np.ones(img_labels.shape)
 
             # Train the discriminator
@@ -234,3 +242,9 @@ class ACGAN():
 
         return images, labels
 
+
+if __name__ == '__main__':
+    from pipeline import split_data
+    x_train, y_train, _, _ = split_data(1)
+    acgan = ACGAN(x_train, y_train)
+    acgan.train(epochs=4000, batch_size=32)
