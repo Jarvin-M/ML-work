@@ -26,8 +26,9 @@ def load_data(base_path):
 
 
 class AlexNet:
-    def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, folder=''):
+    def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, folder='', run_nr=''):
         self.folder = folder
+        self.run_nr = run_nr
         self.lr = lr
         # build and compile the network
         self.network = self.build_network()
@@ -135,7 +136,7 @@ class AlexNet:
         return history
 
     def save_to_csv(self, history):
-        with open('{}out.csv'.format(self.folder), 'w') as f:
+        with open('{}out_{}.csv'.format(self.folder, self.run_nr), 'w') as f:
             h = history.history
             lines = ['train_acc;val_acc;train_loss;val_loss\n']
             lines += ['{};{};{};{}\n'.format(h['acc'][idx], h['val_acc'][idx], h['loss'][idx], h['val_loss'][idx])
@@ -152,7 +153,7 @@ class AlexNet:
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("{}plots/alexnet_accuracy_{}_epochs_{}.png".format(self.folder, epochs, self.lr))
+        plt.savefig("{}plots/alexnet_accuracy_{}_epochs_{}_{}.png".format(self.folder, epochs, self.lr, self.run_nr))
         plt.close()
         # summarize history for loss
         plt.plot(history.history['loss'])
@@ -162,10 +163,11 @@ class AlexNet:
         plt.ylabel('loss')
         plt.xlabel('epoch')
         plt.legend(['train', 'test'], loc='upper left')
-        plt.savefig("{}plots/alexnet_loss_{}_epochs_{}.png".format(self.folder, epochs, self.lr))
+        plt.savefig("{}plots/alexnet_loss_{}_epochs_{}_{}.png".format(self.folder, epochs, self.lr, self.run_nr))
         plt.close()
 
     def save_model(self, epochs):
+        # Currently not usable
         model_path = "saved_model/alexnet_%d_epochs.json" % epochs
         weights_path = "saved_model/alexnet_%d_epochs_weights.hdf5" % epochs
         options = {"file_arch": model_path,

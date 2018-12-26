@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 
 class ACGAN():
-    def __init__(self, x_train, y_train, folder=''):
+    def __init__(self, x_train, y_train, folder='', run_nr=''):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -26,6 +26,7 @@ class ACGAN():
         self.x_train = x_train
         self.y_train = y_train
         self.folder = folder
+        self.run_nr = run_nr
 
         optimizer = Adam(0.0002, 0.5)
         losses = ['binary_crossentropy', 'sparse_categorical_crossentropy']
@@ -174,6 +175,8 @@ class ACGAN():
             # Plot the progress
             if (epoch+1) % 1000 == 0 or epochs < 10:
                 print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
+            if epochs > 10 and epoch % (epochs/4) == 0:
+                self.sample_images(epoch)
 
         self.sample_images(epochs)
 
@@ -192,7 +195,7 @@ class ACGAN():
                 axs[i, j].imshow(gen_imgs[cnt])
                 axs[i, j].axis('off')
                 cnt += 1
-        fig.savefig("%simages/%d_64.png" % (self.folder, epoch))
+        fig.savefig("%simages/%d_run_%s.png" % (self.folder, epoch, self.run_nr))
         plt.close()
 
     def save_model(self):

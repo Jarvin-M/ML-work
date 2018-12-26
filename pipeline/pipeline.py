@@ -60,9 +60,15 @@ class Pipeline:
         pathlib.Path('{}/images'.format(folder)).mkdir(parents=True, exist_ok=True)
         pathlib.Path('{}/augmented/plots'.format(folder)).mkdir(parents=True, exist_ok=True)
         pathlib.Path('{}/original/plots'.format(folder)).mkdir(parents=True, exist_ok=True)
-        self.folder = folder+'/'
+        self.folder = folder + '/'
 
-    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300,  alexnet_lr=0.00001):
+    def n_runs(self, n=10, split=.8, **kwargs):
+        self.write_props(kwargs)
+        for run in range(n):
+            self.hashtag_print('Run {}:'.format(run))
+            self.run(split=split, run_nr=str(run), **kwargs)
+
+    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0'):
         """
         1. Split the data according to a float split
         2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of training.
@@ -77,7 +83,7 @@ class Pipeline:
 
         # Train an ACGAN on the training data
         self.hashtag_print('Training ACGAN for {} epochs.'.format(gan_epochs))
-        gan = self.train_gan(x_train, np.copy(y_train), gan_epochs)
+        gan = self.train_gan(x_train, np.copy(y_train), gan_epochs, self.folder, run_nr)
 
         # Generate extra training data with the GAN
         self.hashtag_print('Generating extra training data using the trained ACGAN.')
@@ -86,37 +92,38 @@ class Pipeline:
         # Train on only original dataset
         self.hashtag_print('Training AlexNet on original training data.')
         original = self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
-                                      epochs=alexnet_epochs, folder='{}original/'.format(self.folder))
+                                      epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
 
         # Train on augmented dataset
         self.hashtag_print('Training AlexNet on augmented data.')
         augmented = self.train_alexnet(x_train=np.concatenate((x_train, x_train_generated)),
                                        y_train=np.concatenate((y_train, y_train_generated)),
                                        x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
-                                       folder='{}augmented/'.format(self.folder))
+                                       folder='{}augmented/'.format(self.folder), run_nr=run_nr)
 
-    def train_gan(self, x_train, y_train, epochs):
-        gan = ACGAN(x_train, y_train, self.folder)
+    @staticmethod
+    def train_gan(x_train, y_train, epochs, folder, run_nr):
+        gan = ACGAN(x_train, y_train, folder, run_nr=run_nr)
         gan.train(epochs=epochs, batch_size=32)
         return gan
 
-    def train_alexnet(self, x_train, y_train, x_test, y_test, epochs, lr, folder):
+    @staticmethod
+    def train_alexnet(x_train, y_train, x_test, y_test, epochs, lr, folder, run_nr):
         original = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr,
-                           folder=folder)
-        history = original.train_network_with_generator(epochs=epochs, save_model=False)
-        print(history)
+                           folder=folder, run_nr=run_nr)
+        original.train_network_with_generator(epochs=epochs, save_model=False)
         return original
 
     @staticmethod
     def hashtag_print(string):
         print('#'*50, '\n{}\n'.format(string), '#'*50)
 
+    def write_props(self, d):
+        with open('{}props'.format(self.folder), 'w') as f:
+            f.writelines(["{}: {}\n".format(key, value) for key, value in d.items()])
+            f.flush()
 
-pipe = Pipeline(folder="test")
-pipe.run(split=0.8, gan_epochs=3, alexnet_epochs=2,  alexnet_lr=0.0001)
 
-# Split the data (0.2 - 0.8) ?
-# Train gan with training data
-# Generate extra dataset
-# Train alexnet trainging data
-# Train alexnet with training data and generated data
+if __name__ == '__main__':
+    pipe = Pipeline(folder="test")
+    pipe.n_runs(n=2, split=0.8, gan_epochs=3, alexnet_epochs=2,  alexnet_lr=0.0001)
