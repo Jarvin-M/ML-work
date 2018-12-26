@@ -62,11 +62,11 @@ class Pipeline:
         pathlib.Path('{}/original/plots'.format(folder)).mkdir(parents=True, exist_ok=True)
         self.folder = folder + '/'
 
-    def n_runs(self, n=10, split=.8, **kwargs):
+    def n_runs(self, n=10, **kwargs):
         self.write_props(kwargs)
         for run in range(n):
             self.hashtag_print('Run {}:'.format(run))
-            self.run(split=split, run_nr=str(run), **kwargs)
+            self.run(run_nr=str(run), **kwargs)
 
     def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0'):
         """
