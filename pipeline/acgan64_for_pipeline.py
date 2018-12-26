@@ -140,7 +140,7 @@ class ACGAN():
             horizontal_flip=True,  # randomly flip images
             vertical_flip=False  # randomly flip images
         )
-        datagen_iterator = datagenerator.flow(self.x_train, self.y_train, batch_size=batch_size)
+        datagen_iterator = datagenerator.flow(self.x_train, self.y_train, batch_size=batch_size, shuffle=True)
 
         # Adversarial ground truths
         valid = np.ones((batch_size, 1))
@@ -154,6 +154,8 @@ class ACGAN():
 
             # Select a random batch of images and corresponding labels
             imgs, img_labels = datagen_iterator.next()
+            while img_labels.shape[0] != batch_size:  # Sometimes something goes wrong with the batch_size
+                imgs, img_labels = datagen_iterator.next()
 
             # Sample noise as generator input
             noise = np.random.normal(0, 1, (batch_size, 100))
