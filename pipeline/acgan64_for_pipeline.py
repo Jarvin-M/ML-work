@@ -29,7 +29,8 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
 
-        optimizer = Adam(0.0002, 0.5)
+        self.lr = 0.0002
+        optimizer = Adam(self.lr, 0.5)
         losses = ['binary_crossentropy', 'sparse_categorical_crossentropy']
 
         # Build and compile the discriminator
@@ -146,6 +147,8 @@ class ACGAN():
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
 
+        history = {'d_loss': [], 'g_loss': [], 'acc': [], 'op_acc': []}
+
         for epoch in range(epochs):
 
             # ---------------------
@@ -182,6 +185,11 @@ class ACGAN():
             # Train the generator
             g_loss = self.combined.train_on_batch([noise, sampled_labels], [valid, sampled_labels])
 
+            history['d_loss'].append(d_loss[0])
+            history['g_loss'].append(g_loss[0])
+            history['acc'].append(d_loss[3])
+            history['op_acc'].append(d_loss[4])
+
             # Plot the progress
             if (epoch+1) % 1000 == 0 or epochs < 10:
                 print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
@@ -189,6 +197,7 @@ class ACGAN():
                 self.sample_images(epoch)
 
         self.sample_images(epochs)
+        self.plot_accuracy_and_loss(history, epochs)
 
     def sample_images(self, epoch):
         r, c = 10, 15
@@ -222,6 +231,30 @@ class ACGAN():
         save(self.generator, "generator64")
         save(self.discriminator, "discriminator64")
 
+    def plot_accuracy_and_loss(self, history, epochs):
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        fig.set_size_inches(10, 5)
+        # summarize history for accuracy
+        ax1.plot(history['acc'])
+        ax1.plot(history['op_acc'])
+        ax1.axis(xmin=0, xmax=epochs-1, ymin=0, ymax=1)
+        ax1.set_title('model accuracy')
+        ax1.set_ylabel('accuracy')
+        ax1.set_xlabel('epoch')
+        ax1.legend(['acc', 'op_acc'], loc='upper left')
+
+        # summarize history for loss
+        ax2.plot(history['d_loss'])
+        ax2.plot(history['g_loss'])
+        ax2.axis(xmin=0, xmax=epochs-1)
+        ax2.set_title('model loss')
+        ax2.set_ylabel('loss')
+        ax2.set_xlabel('epoch')
+        ax2.legend(['d_loss', 'g_loss'], loc='upper left')
+
+        fig.suptitle('ACGAN with learning rate {}'.format(self.lr))
+        fig.savefig("{}images/acgan_accuracy_loss_{}_epochs_{}.png".format(self.folder, epochs, self.run_nr))
+
     def generate_images_for_class(self, image_class, amount):
         noise = np.random.normal(0, 1, (amount, 100))
         sampled_labels = np.array([image_class]*amount)
@@ -247,6 +280,6 @@ class ACGAN():
 
 if __name__ == '__main__':
     from pipeline import split_data
-    x_train, y_train, _, _ = split_data(1)
+    x_train, y_train, _, _ = split_data(.2)
     acgan = ACGAN(x_train, y_train)
-    acgan.train(epochs=4000, batch_size=32)
+    acgan.train(epochs=28000, batch_size=32)
