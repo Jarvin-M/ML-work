@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 class ACGAN():
-    def __init__(self, x_train, y_train, folder='', run_nr=''):
+    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0001):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -29,7 +29,7 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
 
-        self.lr = 0.0001
+        self.lr = lr
         optimizer = Adam(self.lr, 0.5)
         losses = ['binary_crossentropy', 'sparse_categorical_crossentropy']
 
@@ -282,5 +282,6 @@ class ACGAN():
 if __name__ == '__main__':
     from pipeline import split_data
     x_train, y_train, _, _ = split_data(.1)
-    acgan = ACGAN(x_train, y_train)
-    acgan.train(epochs=10000, batch_size=32)
+    lr = 0.0001
+    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr)
+    acgan.train(epochs=50000, batch_size=32)
