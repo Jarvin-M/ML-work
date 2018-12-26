@@ -1,0 +1,3 @@
+gan_epochs: 28000
+alexnet_epochs: 400
+alexnet_lr: 1e-05
