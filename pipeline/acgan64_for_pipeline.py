@@ -29,7 +29,7 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
 
-        self.lr = 0.00002
+        self.lr = 0.0001
         optimizer = Adam(self.lr, 0.5)
         losses = ['binary_crossentropy', 'sparse_categorical_crossentropy']
 
