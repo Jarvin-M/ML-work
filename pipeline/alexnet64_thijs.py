@@ -27,6 +27,15 @@ def load_data(base_path):
 
 class AlexNet:
     def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, folder='', run_nr=''):
+        """
+        :param x_train: The training data images
+        :param y_train: The trainging data labels
+        :param x_test: The validation data images
+        :param y_test: The validation data labels
+        :param lr: The learning rate
+        :param folder: The folder the save the results to
+        :param run_nr: The run used for creating unique filenames
+        """
         self.folder = folder
         self.run_nr = run_nr
         self.lr = lr
@@ -177,7 +186,7 @@ class AlexNet:
         self.network.save_weights(options['file_weight'])
 
     def sample_transformed_x(self):
-        transformed = self.datagen.random_transform(self.x_train[300])
+        transformed = self.datagen.random_transform(self.x_train[400])
         plt.imshow(transformed)
         plt.savefig('example.png')
         plt.close()
@@ -193,4 +202,4 @@ if __name__ == '__main__':
     alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr, folder='test/')
 
     alexnet.train_network_with_generator(epochs=epochs)
-    #alexnet.sample_transformed_x()
+    # alexnet.sample_transformed_x()

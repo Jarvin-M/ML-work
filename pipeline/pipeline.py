@@ -27,8 +27,8 @@ def split_data(split=.8):
     y_train = []
     x_test = []
     y_test = []
-    for i in range(1,16):
-        idxs = np.where(labels==i)
+    for i in range(1, 16):
+        idxs = np.where(labels == i)
         (x_train_temp, y_train_temp, x_test_temp, y_test_temp) = split_class(images[idxs], labels[idxs], split)
         x_train.extend(x_train_temp)
         y_train.extend(y_train_temp)
@@ -100,6 +100,12 @@ class Pipeline:
                                        y_train=np.concatenate((y_train, y_train_generated)),
                                        x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
                                        folder='{}augmented/'.format(self.folder), run_nr=run_nr)
+        del x_train_generated
+        del y_train_generated
+        del x_train
+        del y_train
+        del x_test
+        del y_test
 
     @staticmethod
     def train_gan(x_train, y_train, epochs, folder, run_nr):
@@ -125,5 +131,6 @@ class Pipeline:
 
 
 if __name__ == '__main__':
-    pipe = Pipeline(folder="test")
-    pipe.n_runs(n=2, split=0.8, gan_epochs=3, alexnet_epochs=2,  alexnet_lr=0.0001)
+    split = 0.2
+    pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
+    pipe.n_runs(n=8, split=split, gan_epochs=28000, alexnet_epochs=400,  alexnet_lr=0.00001)
