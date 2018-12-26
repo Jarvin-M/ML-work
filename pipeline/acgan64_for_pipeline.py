@@ -281,6 +281,6 @@ class ACGAN():
 
 if __name__ == '__main__':
     from pipeline import split_data
-    x_train, y_train, _, _ = split_data(.2)
+    x_train, y_train, _, _ = split_data(.1)
     acgan = ACGAN(x_train, y_train)
-    acgan.train(epochs=28000, batch_size=32)
+    acgan.train(epochs=10000, batch_size=32)
