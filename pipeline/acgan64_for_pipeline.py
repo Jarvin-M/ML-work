@@ -29,7 +29,7 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
 
-        self.lr = 0.0002
+        self.lr = 0.00002
         optimizer = Adam(self.lr, 0.5)
         losses = ['binary_crossentropy', 'sparse_categorical_crossentropy']
 
@@ -253,7 +253,8 @@ class ACGAN():
         ax2.legend(['d_loss', 'g_loss'], loc='upper left')
 
         fig.suptitle('ACGAN with learning rate {}'.format(self.lr))
-        fig.savefig("{}images/acgan_accuracy_loss_{}_epochs_{}.png".format(self.folder, epochs, self.run_nr))
+        fig.savefig("{}images/acgan_accuracy_loss_{}_epochs_{}_lr_{}.png".format(self.folder, epochs, self.run_nr,
+                                                                                 self.lr))
 
     def generate_images_for_class(self, image_class, amount):
         noise = np.random.normal(0, 1, (amount, 100))
