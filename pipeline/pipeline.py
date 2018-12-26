@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 import random
 from datetime import datetime
-
+import pathlib
 import numpy as np
 
 from acgan64_for_pipeline import ACGAN
@@ -53,38 +53,67 @@ def split_data(split=.8):
 
 
 class Pipeline:
-    def __init__(self, split=.8, gan_epochs=30000, alexnet_epochs=300,  alexnet_lr=0.00001, folder='run1/'):
+
+    def __init__(self, folder='test'):
         random.seed(datetime.now())
-        self.folder = folder
+        # Create the folders for results
+        pathlib.Path('{}/images'.format(folder)).mkdir(parents=True, exist_ok=True)
+        pathlib.Path('{}/augmented/plots'.format(folder)).mkdir(parents=True, exist_ok=True)
+        pathlib.Path('{}/original/plots'.format(folder)).mkdir(parents=True, exist_ok=True)
+        self.folder = folder+'/'
+
+    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300,  alexnet_lr=0.00001):
+        """
+        1. Split the data according to a float split
+        2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of training.
+        3. Generate extra training data (size of this data is equal to the size of the original training data)
+        4. Train the AlexNet with only the original data and save plots and csv of the training process
+        5. Train the AlexNet with original data and the generated extra training data
+        """
 
         # Split the data
+        self.hashtag_print('Splitting data with a {} split.'.format(split))
         x_train, y_train, x_test, y_test = split_data(split=split)
 
-        # Create extra image of the training data with a GAN
-        x_train_generated, y_train_generated = self.generate_data(x_train, np.copy(y_train), gan_epochs)
+        # Train an ACGAN on the training data
+        self.hashtag_print('Training ACGAN for {} epochs.'.format(gan_epochs))
+        gan = self.train_gan(x_train, np.copy(y_train), gan_epochs)
+
+        # Generate extra training data with the GAN
+        self.hashtag_print('Generating extra training data using the trained ACGAN.')
+        x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=int(x_train.shape[0]/15))
 
         # Train on only original dataset
-        print('#'*50, '\nTraining AlexNet on original data\n', '#'*50)
-        original = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
-                           folder='{}original/'.format(self.folder))
-        original.train_network_with_generator(epochs=alexnet_epochs, save_model=False)
+        self.hashtag_print('Training AlexNet on original training data.')
+        original = self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
+                                      epochs=alexnet_epochs, folder='{}original/'.format(self.folder))
 
         # Train on augmented dataset
-        print('#'*50, '\nTraining AlexNet on augmented data\n', '#'*50)
-        augmented = AlexNet(x_train=np.concatenate((x_train, x_train_generated)),
-                            y_train=np.concatenate((y_train, y_train_generated)),
-                            x_test=x_test, y_test=y_test, lr=alexnet_lr,
-                            folder='{}augmented/'.format(self.folder))
-        augmented.train_network_with_generator(epochs=alexnet_epochs, save_model=False)
+        self.hashtag_print('Training AlexNet on augmented data.')
+        augmented = self.train_alexnet(x_train=np.concatenate((x_train, x_train_generated)),
+                                       y_train=np.concatenate((y_train, y_train_generated)),
+                                       x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
+                                       folder='{}augmented/'.format(self.folder))
 
-    def generate_data(self, x_train, y_train, epochs):
-        print('#'*50, '\nTraining GAN and generating dataset\n', '#'*50)
+    def train_gan(self, x_train, y_train, epochs):
         gan = ACGAN(x_train, y_train, self.folder)
         gan.train(epochs=epochs, batch_size=32)
-        return gan.generate_dataset(size_per_class=int(x_train.shape[0]/15))
+        return gan
+
+    def train_alexnet(self, x_train, y_train, x_test, y_test, epochs, lr, folder):
+        original = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr,
+                           folder=folder)
+        history = original.train_network_with_generator(epochs=epochs, save_model=False)
+        print(history)
+        return original
+
+    @staticmethod
+    def hashtag_print(string):
+        print('#'*50, '\n{}\n'.format(string), '#'*50)
 
 
-Pipeline(split=0.2, folder="run1/")
+pipe = Pipeline(folder="test")
+pipe.run(split=0.8, gan_epochs=3, alexnet_epochs=2,  alexnet_lr=0.0001)
 
 # Split the data (0.2 - 0.8) ?
 # Train gan with training data

@@ -83,7 +83,7 @@ class ACGAN():
         model.add(Conv2D(self.channels, kernel_size=3, padding="same"))
         model.add(Activation("tanh"))
 
-        model.summary()
+        # model.summary()
 
         noise = Input(shape=(self.latent_dim,))
         label = Input(shape=(1,), dtype='int32')
@@ -115,7 +115,7 @@ class ACGAN():
         model.add(Dropout(0.25))
 
         model.add(Flatten())
-        model.summary()
+        # model.summary()
 
         img = Input(shape=self.img_shape)
 
@@ -172,7 +172,8 @@ class ACGAN():
             g_loss = self.combined.train_on_batch([noise, sampled_labels], [valid, sampled_labels])
 
             # Plot the progress
-            print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
+            if (epoch+1) % 1000 == 0 or epochs < 10:
+                print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
 
         self.sample_images(epochs)
 

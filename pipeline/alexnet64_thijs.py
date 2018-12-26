@@ -108,7 +108,7 @@ class AlexNet:
         alexnet.add(Dense(15))
         alexnet.add(Activation('softmax'))
 
-        alexnet.summary()
+        # alexnet.summary()
 
         return alexnet
 
@@ -121,7 +121,7 @@ class AlexNet:
             self.save_model(epochs)
         return history
 
-    def train_network_with_generator(self, epochs, create_plots=True, save_model=True):
+    def train_network_with_generator(self, epochs, create_plots=True, save_model=True, save_csv=True):
         history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
                                              steps_per_epoch=int(np.ceil(900 / float(32))),
                                              epochs=epochs, verbose=2,
@@ -130,12 +130,24 @@ class AlexNet:
             self.plot_accuracy_and_loss(history, epochs)
         if save_model:
             self.save_model(epochs)
+        if save_csv:
+            self.save_to_csv(history)
         return history
+
+    def save_to_csv(self, history):
+        with open('{}out.csv'.format(self.folder), 'w') as f:
+            h = history.history
+            lines = ['train_acc;val_acc;train_loss;val_loss\n']
+            lines += ['{};{};{};{}\n'.format(h['acc'][idx], h['val_acc'][idx], h['loss'][idx], h['val_loss'][idx])
+                      for idx in range(len(h['loss']))]
+            f.writelines(lines)
+            f.flush()
 
     def plot_accuracy_and_loss(self, history, epochs):
         # summarize history for accuracy
         plt.plot(history.history['acc'])
         plt.plot(history.history['val_acc'])
+        plt.axis(xmin=0, xmax=epochs-1, ymin=0, ymax=1.)
         plt.title('model accuracy {}'.format(self.lr))
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
@@ -145,6 +157,7 @@ class AlexNet:
         # summarize history for loss
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
+        plt.axis(xmin=0, xmax=epochs-1)
         plt.title('model loss {}'.format(self.lr))
         plt.ylabel('loss')
         plt.xlabel('epoch')
@@ -172,10 +185,10 @@ if __name__ == '__main__':
     # np.random.seed(1000)
 
     epochs = 500
-    lr = 0.00001  # 0.000001 best till now
+    lr = 0.00001  # 0.00001 best till now
     (x_train, y_train), (x_test, y_test) = load_data(base_path='../other_GANS/datasets/swedish_np/')
 
-    alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr)
+    alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr, folder='test/')
 
     alexnet.train_network_with_generator(epochs=epochs)
     #alexnet.sample_transformed_x()
