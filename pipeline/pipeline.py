@@ -89,18 +89,19 @@ class Pipeline:
         # Generate extra training data with the GAN
         self.hashtag_print('Generating extra training data using the trained ACGAN.')
         x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=int(x_train.shape[0]/15))
+        gan.delete()
 
         # Train on only original dataset
         self.hashtag_print('Training AlexNet on original training data.')
-        original = self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
-                                      epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
+        self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
+                           epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
 
         # Train on augmented dataset
         self.hashtag_print('Training AlexNet on augmented data.')
-        augmented = self.train_alexnet(x_train=np.concatenate((x_train, x_train_generated)),
-                                       y_train=np.concatenate((y_train, y_train_generated)),
-                                       x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
-                                       folder='{}augmented/'.format(self.folder), run_nr=run_nr)
+        self.train_alexnet(x_train=np.concatenate((x_train, x_train_generated)),
+                           y_train=np.concatenate((y_train, y_train_generated)),
+                           x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
+                           folder='{}augmented/'.format(self.folder), run_nr=run_nr)
         del x_train_generated
         del y_train_generated
         del x_train
@@ -116,10 +117,10 @@ class Pipeline:
 
     @staticmethod
     def train_alexnet(x_train, y_train, x_test, y_test, epochs, lr, folder, run_nr):
-        original = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr,
-                           folder=folder, run_nr=run_nr)
-        original.train_network_with_generator(epochs=epochs, save_model=False)
-        return original
+        alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr,
+                          folder=folder, run_nr=run_nr)
+        alexnet.train_network_with_generator(epochs=epochs, save_model=False)
+        alexnet.delete()
 
     @staticmethod
     def hashtag_print(string):

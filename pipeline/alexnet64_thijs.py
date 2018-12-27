@@ -1,3 +1,5 @@
+import gc
+
 import keras
 import matplotlib
 import numpy as np
@@ -59,6 +61,10 @@ class AlexNet:
             horizontal_flip=True,  # randomly flip images
             vertical_flip=False  # randomly flip images
         )
+
+    def delete(self):
+        del self.network
+        gc.collect()
 
     def build_network(self):
         # A sequential alexnet

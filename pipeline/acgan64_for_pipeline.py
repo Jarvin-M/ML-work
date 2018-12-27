@@ -1,5 +1,7 @@
 from __future__ import print_function, division
 
+import gc
+
 import matplotlib
 import numpy as np
 from keras.layers import BatchNormalization, Activation, Embedding, ZeroPadding2D
@@ -58,8 +60,13 @@ class ACGAN():
         # The combined model  (stacked generator and discriminator)
         # Trains the generator to fool the discriminator
         self.combined = Model([noise, label], [valid, target_label])
-        self.combined.compile(loss=losses,
-            optimizer=optimizer)
+        self.combined.compile(loss=losses, optimizer=optimizer)
+
+    def delete(self):
+        del self.generator
+        del self.discriminator
+        del self.combined
+        gc.collect()
 
     def build_generator(self):
         model = Sequential()
