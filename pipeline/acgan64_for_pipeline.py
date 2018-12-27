@@ -315,6 +315,8 @@ def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
     acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr, end_when_collapsed=True)
     succes = acgan.train(epochs=epochs, batch_size=32)
     acgan.delete()
+    del x_train
+    del y_train
     return succes
 
 
@@ -326,8 +328,9 @@ if __name__ == '__main__':
     # Run the experiment for different splits
     results = []
     for split in splits:
-        results.append(sum([1 for i in range(10) if train_gan()]))
+        results.append(sum([1 for i in range(10) if train_gan(split=split, lr=lr, epochs=epochs)]))
 
+    print("learning rate: {} epochs: {}".format(lr, epochs))
     # Print results
     for split, result in zip(splits, results):
         print("Of 10 training session for a {} split {} collapsed".format(split, result))

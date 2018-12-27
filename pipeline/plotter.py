@@ -62,5 +62,6 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False):
     plt.close()
 
 
-plot_folders(['26_12_2018_split_01', '26_12_2018_split_02', '26_12_2018_split_05', '26_12_2018_split_08'], 'val_acc', zoom=True)
+#plot_folders(['26_12_2018_split_01', '26_12_2018_split_02', '26_12_2018_split_05', '26_12_2018_split_08'], 'val_acc', zoom=True)
 # plot_folders(['26_12_2018_split_01', '26_12_2018_split_02'], 'val_acc', zoom=True)
+plot_folders(['27_12_2018_split_01', '27_12_2018_split_02'], 'val_acc', zoom=True)
