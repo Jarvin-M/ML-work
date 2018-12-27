@@ -111,7 +111,7 @@ class Pipeline:
 
     @staticmethod
     def train_gan(x_train, y_train, epochs, folder, run_nr):
-        gan = ACGAN(x_train, y_train, folder, run_nr=run_nr)
+        gan = ACGAN(x_train, y_train, folder, run_nr=run_nr, print_intermediate_images=False)
         gan.train(epochs=epochs, batch_size=32)
         return gan
 
@@ -133,6 +133,6 @@ class Pipeline:
 
 
 if __name__ == '__main__':
-    split = 0.2
+    split = 0.1
     pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
     pipe.n_runs(n=8, split=split, gan_epochs=28000, alexnet_epochs=400,  alexnet_lr=0.00001)

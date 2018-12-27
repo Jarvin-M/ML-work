@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 class ACGAN():
-    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0001):
+    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -30,6 +30,7 @@ class ACGAN():
         self.y_train = y_train
         self.folder = folder
         self.run_nr = run_nr
+        self.print_intermediate_images = print_intermediate_images
 
         self.lr = lr
         optimizer = Adam(self.lr, 0.5)
@@ -200,7 +201,7 @@ class ACGAN():
             # Plot the progress
             if (epoch+1) % 1000 == 0 or epochs < 10:
                 print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
-            if epochs > 10 and epoch % (epochs/4) == 0:
+            if epochs > 10 and epoch % (epochs/4) == 0 and self.print_intermediate_images:
                 self.sample_images(epoch)
 
         self.sample_images(epochs)
