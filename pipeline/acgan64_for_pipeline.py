@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 
 
 class ACGAN():
-    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True):
+    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True,
+                 end_when_collapsed=True):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -31,6 +32,7 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
         self.print_intermediate_images = print_intermediate_images
+        self.end_when_collapsed = end_when_collapsed
 
         self.lr = lr
         optimizer = Adam(self.lr, 0.5)
@@ -203,9 +205,13 @@ class ACGAN():
                 print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
             if epochs > 10 and epoch % (epochs/4) == 0 and self.print_intermediate_images:
                 self.sample_images(epoch)
+            if self.end_when_collapsed and epoch % 100 == 0 and self.is_collapsed():
+                self.sample_images(epochs)
+                return False
 
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
+        return True
 
     def sample_images(self, epoch):
         r, c = 10, 15
@@ -286,10 +292,31 @@ class ACGAN():
 
         return images, labels
 
+    def is_collapsed(self):
+        # Compare 5 generated images
+        for image_class in range(self.num_classes):
+            images_pairs = zip(self.generate_images_for_class(image_class, 5),
+                               self.generate_images_for_class(image_class, 5))
+            if max([self.mse(im1, im2) for im1, im2 in images_pairs]) < 0.001:
+                return True
+        return False
 
-if __name__ == '__main__':
+    @staticmethod
+    def mse(imageA, imageB):  # < 0.005 counts as collapsed
+        err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+        err /= float(imageA.shape[0] * imageA.shape[1])
+        return err
+
+
+def train_gan():
     from pipeline import split_data
     x_train, y_train, _, _ = split_data(.1)
     lr = 0.0001
-    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr)
-    acgan.train(epochs=50000, batch_size=32)
+    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr, end_when_collapsed=True)
+    succes = acgan.train(epochs=5000, batch_size=32)
+    acgan.delete()
+    return succes
+
+
+if __name__ == '__main__':
+    print(train_gan())
