@@ -206,7 +206,7 @@ class ACGAN():
             if epochs > 10 and epoch % (epochs/4) == 0 and self.print_intermediate_images:
                 self.sample_images(epoch)
             if self.end_when_collapsed and epoch % 100 == 0 and self.is_collapsed():
-                self.sample_images(epochs)
+                self.sample_images(epoch)
                 return False
 
         self.sample_images(epochs)
@@ -319,4 +319,4 @@ def train_gan():
 
 
 if __name__ == '__main__':
-    print(train_gan())
+    print(sum([1 for i in range(10) if train_gan()]))
