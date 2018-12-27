@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 class ACGAN():
     def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True,
-                 end_when_collapsed=True):
+                 end_when_collapsed=False):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -269,6 +269,7 @@ class ACGAN():
         fig.suptitle('ACGAN with learning rate {}'.format(self.lr))
         fig.savefig("{}images/acgan_accuracy_loss_{}_epochs_{}_lr_{}.png".format(self.folder, epochs, self.run_nr,
                                                                                  self.lr))
+        plt.close(fig)
 
     def generate_images_for_class(self, image_class, amount):
         noise = np.random.normal(0, 1, (amount, 100))
@@ -308,15 +309,25 @@ class ACGAN():
         return err
 
 
-def train_gan():
+def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
     from pipeline import split_data
-    x_train, y_train, _, _ = split_data(.1)
-    lr = 0.0001
+    x_train, y_train, _, _ = split_data(split)
     acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr, end_when_collapsed=True)
-    succes = acgan.train(epochs=5000, batch_size=32)
+    succes = acgan.train(epochs=epochs, batch_size=32)
     acgan.delete()
     return succes
 
 
 if __name__ == '__main__':
-    print(sum([1 for i in range(10) if train_gan()]))
+    lr = 0.0002
+    splits = [.1, .2, .5, .8]
+    epochs = 3000
+
+    # Run the experiment for different splits
+    results = []
+    for split in splits:
+        results.append(sum([1 for i in range(10) if train_gan()]))
+
+    # Print results
+    for split, result in zip(splits, results):
+        print("Of 10 training session for a {} split {} collapsed".format(split, result))
