@@ -63,8 +63,8 @@ class ImageGenerator:
         return images, labels
 
     def load_model(self):
-        model_path = "saved_model/%s.json" % self.model_name
-        weights_path = "saved_model/%s_weights.hdf5" % self.model_name
+        model_path = "other_GANS/acgan/saved_model/%s.json" % self.model_name
+        weights_path = "other_GANS/acgan/saved_model/%s_weights.hdf5" % self.model_name
         # load json and create model
         json_file = open(model_path, 'r')
         loaded_model_json = json_file.read()

@@ -158,6 +158,7 @@ class ACGAN():
         fake = np.zeros((batch_size, 1))
 
         history = {'d_loss': [], 'g_loss': [], 'acc': [], 'op_acc': []}
+        class_differences = [[]] * self.num_classes
 
         for epoch in range(epochs):
 
@@ -208,9 +209,13 @@ class ACGAN():
             if self.end_when_collapsed and epoch % 100 == 0 and self.is_collapsed():
                 self.sample_images(epoch)
                 return False
+            if epoch % 1000 == 0:
+                for image_class in range(self.num_classes):
+                    class_differences[image_class].append(self.average_class_difference(image_class))
 
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
+        self.plot_class_differences(class_differences, epochs)
         return True
 
     def sample_images(self, epoch):
@@ -293,6 +298,28 @@ class ACGAN():
 
         return images, labels
 
+    def average_class_difference(self, image_class, n=50):
+        images = self.generate_images_for_class(image_class, n)
+        total = 0
+        cnt = 0
+        for idx, im1 in enumerate(images[:-1]):
+            total += sum([self.mse(im1, im2) for im2 in images[idx+1:]])
+            cnt += n - (idx+1)
+        return total/cnt
+
+    def plot_class_differences(self, class_differences, epochs):
+        y = list(range(0, epochs, 1000))
+        legend = [str(i) for i in range(self.num_classes)]
+        for diff in class_differences:
+            plt.plot(diff, y)
+        plt.axis(xmin=0, xmax=epochs - 1)
+        plt.title('Class differences')
+        plt.ylabel('Average mse between images')
+        plt.xlabel('epoch')
+        plt.legend(legend, loc='lower right')
+        plt.savefig("{}images/class_differences_{}.png".format(self.folder, self.run_nr))
+        plt.close()
+
     def is_collapsed(self):
         # Compare 5 generated images
         for image_class in range(self.num_classes):
@@ -312,7 +339,7 @@ class ACGAN():
 def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
     from pipeline import split_data
     x_train, y_train, _, _ = split_data(split)
-    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr, end_when_collapsed=True)
+    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr)
     succes = acgan.train(epochs=epochs, batch_size=32)
     acgan.delete()
     del x_train
@@ -323,14 +350,8 @@ def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
 if __name__ == '__main__':
     lr = 0.0002
     splits = [.1, .2, .5, .8]
-    epochs = 3000
+    epochs = 5000
 
     # Run the experiment for different splits
-    results = []
     for split in splits:
-        results.append(sum([1 for i in range(10) if train_gan(split=split, lr=lr, epochs=epochs)]))
-
-    print("learning rate: {} epochs: {}".format(lr, epochs))
-    # Print results
-    for split, result in zip(splits, results):
-        print("Of 10 training session for a {} split {} collapsed".format(split, result))
+        train_gan(split=split, lr=lr, epochs=epochs, run_nr=str(split))
