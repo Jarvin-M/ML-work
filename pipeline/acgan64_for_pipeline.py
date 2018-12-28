@@ -214,7 +214,8 @@ class ACGAN():
             if epoch % 1000 == 0:
                 for image_class in range(self.num_classes):
                     class_differences[image_class].append(self.average_class_difference(image_class))
-                print(class_differences)
+                print(len(class_differences))
+                print(len(class_differences[0]))
 
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
@@ -359,3 +360,10 @@ if __name__ == '__main__':
     # Run the experiment for different splits
     for split in splits:
         train_gan(split=split, lr=lr, epochs=epochs, run_nr=str(split))
+
+
+"""
+1. Increase transformations for better GAN
+2. Increase epochs?
+3. Increase amount of added generated pictures
+"""
