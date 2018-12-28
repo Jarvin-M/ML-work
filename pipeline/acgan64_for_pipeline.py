@@ -314,7 +314,7 @@ class ACGAN():
         legend = [str(i) for i in range(self.num_classes)]
         for diff in class_differences:
             plt.plot(diff, y)
-        plt.axis(xmin=0, xmax=epochs - 1)
+        plt.axis(xmin=0, xmax=epochs-1, ymin=0, ymax=4)
         plt.title('Class differences')
         plt.ylabel('Average mse between images')
         plt.xlabel('epoch')
@@ -341,7 +341,7 @@ class ACGAN():
 def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
     from pipeline import split_data
     x_train, y_train, _, _ = split_data(split)
-    acgan = ACGAN(x_train, y_train, run_nr=str(lr), lr=lr)
+    acgan = ACGAN(x_train, y_train, run_nr=run_nr, lr=lr)
     succes = acgan.train(epochs=epochs, batch_size=32)
     acgan.delete()
     del x_train
