@@ -49,8 +49,8 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False):
         augmented_hist, original_hist = read_folder(folder_name)
         plt.plot(augmented_hist[key], color)
         plt.plot(original_hist[key], color+'--')
-        experiment_name = folder_name[-2:]
-        legend.extend([experiment_name+"augmented", experiment_name+"original"])
+        experiment_name = ' '.join(folder_name.split('_')[-2:])
+        legend.extend([experiment_name+" augmented", experiment_name+" original"])
         epochs = len(original_hist[key])
 
     plt.axis(xmin=epochs*3/4 if zoom else 0, xmax=epochs-1, ymin=0.8 if zoom else 0, ymax=1.)
@@ -62,6 +62,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False):
     plt.close()
 
 
-#plot_folders(['26_12_2018_split_01', '26_12_2018_split_02', '26_12_2018_split_05', '26_12_2018_split_08'], 'val_acc', zoom=True)
+# plot_folders(['26_12_2018_split_01', '26_12_2018_split_02', '26_12_2018_split_05', '26_12_2018_split_08'], 'val_acc', zoom=True)
 # plot_folders(['26_12_2018_split_01', '26_12_2018_split_02'], 'val_acc', zoom=True)
-plot_folders(['27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True)
+# plot_folders(['27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True)
+plot_folders(['27_12_2018_split_01', '27_12_2018_split_02', '26_12_2018_split_01', '26_12_2018_split_02'], 'val_acc', zoom=True)

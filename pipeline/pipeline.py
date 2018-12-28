@@ -88,7 +88,7 @@ class Pipeline:
 
         # Generate extra training data with the GAN
         self.hashtag_print('Generating extra training data using the trained ACGAN.')
-        x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=int(x_train.shape[0]/15))
+        x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=int(x_train.shape[0]/15)*2)
         gan.delete()
 
         # Train on only original dataset
