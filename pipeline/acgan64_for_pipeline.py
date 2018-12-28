@@ -310,10 +310,10 @@ class ACGAN():
         return total/cnt
 
     def plot_class_differences(self, class_differences, epochs):
-        y = list(range(0, epochs, 1000))
+        x = list(range(0, epochs, 1000))
         legend = [str(i) for i in range(self.num_classes)]
         for diff in class_differences:
-            plt.plot(diff, y)
+            plt.plot(x, diff)
         plt.axis(xmin=0, xmax=epochs-1, ymin=0, ymax=4)
         plt.title('Class differences')
         plt.ylabel('Average mse between images')
