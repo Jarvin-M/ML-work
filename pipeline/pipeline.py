@@ -1,10 +1,11 @@
 from __future__ import print_function, division
 
-import random
-from datetime import datetime
 import pathlib
-import numpy as np
+import random
+import sys
+from datetime import datetime
 
+import numpy as np
 from acgan64_for_pipeline import ACGAN
 from alexnet64_thijs import AlexNet
 
@@ -133,6 +134,6 @@ class Pipeline:
 
 
 if __name__ == '__main__':
-    split = 0.1
+    split = float(sys.argv[1])
     pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
     pipe.n_runs(n=8, split=split, gan_epochs=28000, alexnet_epochs=400,  alexnet_lr=0.00001)
