@@ -159,7 +159,7 @@ class ACGAN():
 
         # Initialize some arrays for plots
         history = {'d_loss': [], 'g_loss': [], 'acc': [], 'op_acc': []}
-        class_differences = [[]] * self.num_classes
+        class_differences = [[] for _ in range(self.num_classes)]
 
         for epoch in range(epochs):
 
@@ -214,8 +214,6 @@ class ACGAN():
             if epoch % 1000 == 0:
                 for image_class in range(self.num_classes):
                     class_differences[image_class].append(self.average_class_difference(image_class))
-                print(len(class_differences))
-                print(len(class_differences[0]))
 
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
@@ -315,7 +313,6 @@ class ACGAN():
         y = list(range(0, epochs, 1000))
         legend = [str(i) for i in range(self.num_classes)]
         for diff in class_differences:
-            print(diff)
             plt.plot(diff, y)
         plt.axis(xmin=0, xmax=epochs - 1)
         plt.title('Class differences')
