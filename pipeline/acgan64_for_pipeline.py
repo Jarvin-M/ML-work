@@ -314,7 +314,7 @@ class ACGAN():
         legend = [str(i) for i in range(self.num_classes)]
         for diff in class_differences:
             plt.plot(x, diff)
-        plt.axis(xmin=0, xmax=epochs-1, ymin=0, ymax=4)
+        plt.axis(xmin=0, xmax=epochs-1, ymin=0)
         plt.title('Class differences')
         plt.ylabel('Average mse between images')
         plt.xlabel('epoch')
