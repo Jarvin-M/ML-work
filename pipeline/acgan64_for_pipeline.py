@@ -157,6 +157,7 @@ class ACGAN():
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
 
+        # Initialize some arrays for plots
         history = {'d_loss': [], 'g_loss': [], 'acc': [], 'op_acc': []}
         class_differences = [[]] * self.num_classes
 
@@ -196,6 +197,7 @@ class ACGAN():
             # Train the generator
             g_loss = self.combined.train_on_batch([noise, sampled_labels], [valid, sampled_labels])
 
+            # Update plot information
             history['d_loss'].append(d_loss[0])
             history['g_loss'].append(g_loss[0])
             history['acc'].append(d_loss[3])
@@ -212,6 +214,7 @@ class ACGAN():
             if epoch % 1000 == 0:
                 for image_class in range(self.num_classes):
                     class_differences[image_class].append(self.average_class_difference(image_class))
+                print(class_differences)
 
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
@@ -311,6 +314,7 @@ class ACGAN():
         y = list(range(0, epochs, 1000))
         legend = [str(i) for i in range(self.num_classes)]
         for diff in class_differences:
+            print(diff)
             plt.plot(diff, y)
         plt.axis(xmin=0, xmax=epochs - 1)
         plt.title('Class differences')
