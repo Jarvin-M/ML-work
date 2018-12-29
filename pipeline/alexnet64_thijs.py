@@ -193,6 +193,7 @@ class AlexNet:
 
     def sample_transformed_x(self):
         transformed = self.datagen.random_transform(self.x_train[400])
+        transformed = 0.5 * transformed + 0.5
         plt.imshow(transformed)
         plt.savefig('example.png')
         plt.close()

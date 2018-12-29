@@ -1,3 +1,4 @@
 26_12_2018 are without extra transformations on the training data for the GAN(so they collapsed more)
 27_12_2018 are with the extra transformations on GAN training data
 28_12_2018 have extra plots for inter_class_difference and add 2 times as many generated pictures to the alexnet training set.
+29_12_2018 little bit of color shift and increased the epochs for the GAN to 50000

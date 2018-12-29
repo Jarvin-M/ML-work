@@ -149,7 +149,8 @@ class ACGAN():
             width_shift_range=0.02,  # randomly shift images horizontally (fraction of total width)
             height_shift_range=0.02,  # randomly shift images vertically (fraction of total height)
             horizontal_flip=True,  # randomly flip images
-            vertical_flip=False  # randomly flip images
+            vertical_flip=False,  # randomly flip images
+            channel_shift_range=0.05  # Slightly changes the colors
         )
         datagen_iterator = datagenerator.flow(self.x_train, self.y_train, batch_size=batch_size, shuffle=True)
 
@@ -360,7 +361,7 @@ if __name__ == '__main__':
 
 
 """
-1. Increase transformations for better GAN
-2. Increase epochs?
-3. Increase amount of added generated pictures(Done)
+1. Increase transformations for better GAN (Very slightly change the colors of the leaf? might be stupid)
+2. Increase epochs? (increased to 50000)
+3. Increase amount of added generated pictures(Done, but didn't add any real
 """
