@@ -362,5 +362,5 @@ if __name__ == '__main__':
 """
 1. Increase transformations for better GAN
 2. Increase epochs?
-3. Increase amount of added generated pictures
+3. Increase amount of added generated pictures(Done)
 """
