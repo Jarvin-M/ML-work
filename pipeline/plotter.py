@@ -71,13 +71,25 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
     plt.show()
     plt.close()
 
-
+# 26_12_2018 overview
 # plot_folders(['26_12_2018_split_01', '26_12_2018_split_02', '26_12_2018_split_05', '26_12_2018_split_08'], 'val_acc', zoom=True)
 # plot_folders(['26_12_2018_split_01', '26_12_2018_split_02'], 'val_acc', zoom=True)
+
+# 27_12_2018 overview
 # plot_folders(['27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True)
 # plot_folders(['27_12_2018_split_01', '27_12_2018_split_02', '26_12_2018_split_01', '26_12_2018_split_02'], 'val_acc', zoom=True)
+
+# 28_12_2018 overview
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '28_12_2018_split_08'], 'val_acc', zoom=True)
+# 27-28 comparison
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.ORIGINAL)
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)
 
-plot_folders(['29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005', '29_12_2018_split_08'], 'val_acc', zoom=True)
+# 29_12_2018 overview
+plot_folders(['29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005', '29_12_2018_split_08'], 'val_acc', zoom=False)
+# 28-29 comparison 0.05 0.1 0.2
+# plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.ORIGINAL)
+# plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)
+# 28-29 comparison 0.2 0.8
+# plot_folders(['28_12_2018_split_08', '28_12_2018_split_02', '29_12_2018_split_08', '29_12_2018_split_02'], 'val_acc', zoom=True, mode=Mode.ORIGINAL)
+# plot_folders(['28_12_2018_split_08', '28_12_2018_split_02', '29_12_2018_split_08', '29_12_2018_split_02'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)

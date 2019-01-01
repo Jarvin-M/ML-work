@@ -69,7 +69,7 @@ class Pipeline:
             self.hashtag_print('Run {}:'.format(run))
             self.run(run_nr=str(run), **kwargs)
 
-    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0'):
+    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0', only_generated=False):
         """
         1. Split the data according to a float split
         2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of
@@ -89,18 +89,20 @@ class Pipeline:
 
         # Generate extra training data with the GAN
         self.hashtag_print('Generating extra training data using the trained ACGAN.')
-        x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=int(x_train.shape[0]/15)*2)
+        x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=200 if only_generated
+                                                                    else int(x_train.shape[0]/15)*2)
         gan.delete()
 
         # Train on only original dataset
-        self.hashtag_print('Training AlexNet on original training data.')
-        self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
-                           epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
+        if not only_generated:
+            self.hashtag_print('Training AlexNet on original training data.')
+            self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
+                               epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
 
         # Train on augmented dataset
         self.hashtag_print('Training AlexNet on augmented data.')
-        self.train_alexnet(x_train=np.concatenate((x_train, x_train_generated)),
-                           y_train=np.concatenate((y_train, y_train_generated)),
+        self.train_alexnet(x_train=x_train_generated if only_generated else np.concatenate((x_train, x_train_generated)),
+                           y_train=y_train_generated if only_generated else np.concatenate((y_train, y_train_generated)),
                            x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
                            folder='{}augmented/'.format(self.folder), run_nr=run_nr)
         del x_train_generated
@@ -136,4 +138,4 @@ class Pipeline:
 if __name__ == '__main__':
     split = float(sys.argv[1])
     pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
-    pipe.n_runs(n=8, split=split, gan_epochs=50000, alexnet_epochs=400,  alexnet_lr=0.00001)
+    pipe.n_runs(n=8, split=split, gan_epochs=50000, alexnet_epochs=400,  alexnet_lr=0.00001, only_generated=True)
