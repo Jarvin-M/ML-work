@@ -388,7 +388,6 @@ def split_data(split=.8):
 
 
 def train_gan(split=.1, lr=0.0002, epochs=5000, run_nr='0'):
-    from pipeline import split_data
     x_train, y_train, _, _ = split_data(split)
     acgan = ACGAN(x_train, y_train, run_nr=run_nr, lr=lr, print_intermediate_images=True)
     succes = acgan.train(epochs=epochs, batch_size=32)
