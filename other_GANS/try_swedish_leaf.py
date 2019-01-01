@@ -56,8 +56,8 @@ def load_swedish_leaf_in_right_format(path, size, split):
 # Parameters
 DATADIR = './datasets/swedish_leaf'
 NPY_STORAGE = '../other_GANS/datasets/swedish_np/'
-size = (64, 64,)
-split = .8
+size = (128, 128,)
+split = 1
 
 # Run the functions above...
 random.seed(datetime.now())
@@ -68,7 +68,7 @@ print(y_train.shape)
 print(x_test.shape)
 print(y_test.shape)
 
-np.save('{}swedish_leaf{}x{}pix_train_images'.format(NPY_STORAGE, size[0], size[1]), x_train)
-np.save('{}swedish_leaf{}x{}pix_train_labels'.format(NPY_STORAGE, size[0], size[1]), y_train)
+np.save('{}swedish_leaf{}x{}pix_all_images'.format(NPY_STORAGE, size[0], size[1]), x_train)
+np.save('{}swedish_leaf{}x{}pix_all_labels'.format(NPY_STORAGE, size[0], size[1]), y_train)
 np.save('{}swedish_leaf{}x{}pix_test_images'.format(NPY_STORAGE, size[0], size[1]), x_test)
 np.save('{}swedish_leaf{}x{}pix_test_labels'.format(NPY_STORAGE, size[0], size[1]), y_test)
