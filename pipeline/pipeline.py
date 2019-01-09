@@ -7,7 +7,7 @@ from datetime import datetime
 
 import numpy as np
 from acgan64_for_pipeline import ACGAN
-from alexnet64_thijs import AlexNet
+from alexnet64_jarvin import AlexNet
 
 
 def split_class(images, labels, split):

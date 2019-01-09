@@ -103,7 +103,7 @@ class AlexNet:
         alexnet.add(Flatten())
 
         # 1st Dense Layer
-        alexnet.add(Dense(4096, input_shape=(32 * 32 * 3,)))
+        alexnet.add(Dense(4096, input_shape=(64 * 64 * 3,)))
         alexnet.add(Activation('relu'))
         alexnet.add(Dropout(0.4))
         alexnet.add(BatchNormalization())

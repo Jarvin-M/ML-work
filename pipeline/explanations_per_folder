@@ -3,3 +3,4 @@
 28_12_2018 have extra plots for inter_class_difference and add 2 times as many generated pictures to the alexnet training set.
 29_12_2018 little bit of color shift and increased the epochs for the GAN to 50000
 01_01_2019 is training alexnets with only generated training data
+09_01_2019 same but with jarvins classifier
