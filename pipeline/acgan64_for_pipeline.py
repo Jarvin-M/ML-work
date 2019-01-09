@@ -363,5 +363,6 @@ if __name__ == '__main__':
 """
 1. Increase transformations for better GAN (Very slightly change the colors of the leaf? might be stupid)
 2. Increase epochs? (increased to 50000)
-3. Increase amount of added generated pictures(Done, but didn't add any real
+3. Increase amount of added generated pictures(Done, but didn't add any real)
+4. ?
 """

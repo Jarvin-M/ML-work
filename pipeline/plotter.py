@@ -55,13 +55,13 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
     for folder_name, color in zip(folder_names, colors):
         augmented_hist, original_hist = read_folder(folder_name)
         experiment_name = folder_name  # ' '.join(folder_name.split('_')[-2:])
-        if mode == Mode.AUGMENTED or mode == Mode.BOTH:
+        if mode == Mode.AUGMENTED or mode == Mode.BOTH and augmented_hist:
             plt.plot(augmented_hist[key], color)
             legend.append(experiment_name+" augmented")
-        if mode == Mode.ORIGINAL or mode == Mode.BOTH:
+        if mode == Mode.ORIGINAL or mode == Mode.BOTH and original_hist:
             plt.plot(original_hist[key], color+'--')
             legend.append(experiment_name+" original")
-        epochs = len(original_hist[key])
+        epochs = len(augmented_hist[key] if augmented_hist else original_hist[key])
 
     plt.axis(xmin=epochs*3/4 if zoom else 0, xmax=epochs-1, ymin=0.8 if zoom else 0, ymax=1.)
     plt.title(key)
@@ -86,10 +86,13 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '27_12_2018_split_01', '27_12_2018_split_02', '27_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)
 
 # 29_12_2018 overview
-plot_folders(['29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005', '29_12_2018_split_08'], 'val_acc', zoom=False)
+# plot_folders(['29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005', '29_12_2018_split_08'], 'val_acc', zoom=True)
 # 28-29 comparison 0.05 0.1 0.2
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.ORIGINAL)
 # plot_folders(['28_12_2018_split_01', '28_12_2018_split_02', '28_12_2018_split_005', '29_12_2018_split_01', '29_12_2018_split_02', '29_12_2018_split_005'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)
 # 28-29 comparison 0.2 0.8
 # plot_folders(['28_12_2018_split_08', '28_12_2018_split_02', '29_12_2018_split_08', '29_12_2018_split_02'], 'val_acc', zoom=True, mode=Mode.ORIGINAL)
 # plot_folders(['28_12_2018_split_08', '28_12_2018_split_02', '29_12_2018_split_08', '29_12_2018_split_02'], 'val_acc', zoom=True, mode=Mode.AUGMENTED)
+
+# 01_01_2019 overview
+plot_folders(['01_01_2019_split_01', '01_01_2019_split_02', '01_01_2019_split_005', '01_01_2019_split_08'], 'val_acc', zoom=True)
