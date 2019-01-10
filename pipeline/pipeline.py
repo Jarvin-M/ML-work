@@ -138,4 +138,4 @@ class Pipeline:
 if __name__ == '__main__':
     split = float(sys.argv[1])
     pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
-    pipe.n_runs(n=8, split=split, gan_epochs=50000, alexnet_epochs=400,  alexnet_lr=0.00001, only_generated=True)
+    pipe.n_runs(n=8, split=split, gan_epochs=50000, alexnet_epochs=400,  alexnet_lr=0.00001)
