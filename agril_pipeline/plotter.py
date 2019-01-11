@@ -73,7 +73,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 
 
 # 09_01_2019 overview
-# plot_folders(['09_01_2019_split_02', '09_01_2019_split_005'], 'val_acc', zoom=False)
+plot_folders(['09_01_2019_split_02', '09_01_2019_split_005'], 'val_acc', zoom=False)
 
 # 10_01_2019 overview
-plot_folders(['10_01_2019_split_02', '10_01_2019_split_005'], 'val_acc', zoom=False)
+# plot_folders(['10_01_2019_split_02', '10_01_2019_split_005'], 'val_acc', zoom=False)

@@ -7,4 +7,4 @@
 
 ml TensorFlow/1.10.1-fosscuda-2018a-Python-3.6.4
 
-python pipeline.py 0.2
+python pipeline.py 0.7
