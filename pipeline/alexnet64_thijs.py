@@ -138,8 +138,9 @@ class AlexNet:
         return history
 
     def train_network_with_generator(self, epochs, create_plots=True, save_model=True, save_csv=True):
-        history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=32),
-                                             steps_per_epoch=int(np.ceil(900 / float(32))),
+        batch_size = 15
+        history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=batch_size),
+                                             steps_per_epoch=int(np.ceil(900 / float(batch_size))),
                                              epochs=epochs, verbose=2,
                                              validation_data=(self.x_test, self.y_test), shuffle=True)
         if create_plots:
