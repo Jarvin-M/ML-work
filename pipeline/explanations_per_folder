@@ -7,3 +7,4 @@
 10_01_2019 everythinh with jarvins classifier
 12_01_2019 thijs classifier with 64*64 dense input and 600 epochs on alexnet, also lower the batch_size to 15
 13_01_2019 thijs classifier with ¨¨ also lower the batch_size to 8
+14_01_2019 batch_size back to 15, replace collapsed classes with original training data
