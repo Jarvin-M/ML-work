@@ -17,8 +17,7 @@ import matplotlib.pyplot as plt
 
 
 class ACGAN():
-    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True,
-                 end_when_collapsed=False):
+    def __init__(self, x_train, y_train, folder='', run_nr='', lr=0.0002, print_intermediate_images=True):
         # Input shape
         self.img_rows = 64
         self.img_cols = 64
@@ -32,7 +31,6 @@ class ACGAN():
         self.folder = folder
         self.run_nr = run_nr
         self.print_intermediate_images = print_intermediate_images
-        self.end_when_collapsed = end_when_collapsed
 
         self.lr = lr
         optimizer = Adam(self.lr, 0.5)
@@ -209,9 +207,6 @@ class ACGAN():
                 print ("%d [D loss: %f, acc.: %.2f%%, op_acc: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[3], 100*d_loss[4], g_loss[0]))
             if epochs > 10 and epoch % (epochs/4) == 0 and self.print_intermediate_images:
                 self.sample_images(epoch)
-            if self.end_when_collapsed and epoch % 100 == 0 and self.is_collapsed():
-                self.sample_images(epoch)
-                return False
             if epoch % 1000 == 0:
                 for image_class in range(self.num_classes):
                     class_differences[image_class].append(self.average_class_difference(image_class))
@@ -219,7 +214,6 @@ class ACGAN():
         self.sample_images(epochs)
         self.plot_accuracy_and_loss(history, epochs)
         self.plot_class_differences(class_differences, epochs)
-        return True
 
     def sample_images(self, epoch):
         r, c = 10, 15
@@ -279,20 +273,26 @@ class ACGAN():
                                                                                  self.lr))
         plt.close(fig)
 
-    def generate_images_for_class(self, image_class, amount):
+    def generate_images_for_class(self, image_class, amount, sample_from_x_train=False):
+        if sample_from_x_train:
+            class_images = self.x_train[np.where(self.y_train == image_class)]
+            sampled_idxs = np.random.randint(0, class_images.shape[0], amount)
+            return class_images[sampled_idxs]
+
         noise = np.random.normal(0, 1, (amount, 100))
         sampled_labels = np.array([image_class]*amount)
         return self.generator.predict([noise, sampled_labels])
 
-    def generate_dataset(self, size_per_class=60):
+    def generate_dataset(self, size_per_class=60, replace_collapsed_classes=False):
         # Generate size_per_class images for every class and concatenate the arrays
         images = None
         labels = []
         for image_class in range(self.num_classes):
+            class_collapsed = self.average_class_difference(image_class) < 0.05
             if images is None:
-                images = self.generate_images_for_class(image_class, size_per_class)
+                images = self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)
             else:
-                images = np.concatenate((images, self.generate_images_for_class(image_class, size_per_class)))
+                images = np.concatenate((images, self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)))
             labels += [image_class] * size_per_class
 
         # shuffle the dataset
@@ -322,15 +322,6 @@ class ACGAN():
         plt.legend(legend, loc='lower right')
         plt.savefig("{}images/class_differences_{}.png".format(self.folder, self.run_nr))
         plt.close()
-
-    def is_collapsed(self):
-        # Compare 5 generated images
-        for image_class in range(self.num_classes):
-            images_pairs = zip(self.generate_images_for_class(image_class, 5),
-                               self.generate_images_for_class(image_class, 5))
-            if max([self.mse(im1, im2) for im1, im2 in images_pairs]) < 0.001:
-                return True
-        return False
 
     @staticmethod
     def mse(imageA, imageB):  # < 0.005 counts as collapsed

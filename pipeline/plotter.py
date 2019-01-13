@@ -104,4 +104,14 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 # plot_folders(['10_01_2019_split_01', '10_01_2019_split_02', '10_01_2019_split_005', '10_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 12_01_2019 overview
-plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_005', '12_01_2019_split_08'], 'val_acc', zoom=False)
+# plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_005', '12_01_2019_split_08'], 'val_acc', zoom=True)
+
+# 13_01_2019 overview
+plot_folders(['13_01_2019_split_01', '13_01_2019_split_02', '13_01_2019_split_005', '13_01_2019_split_08'], 'val_acc', zoom=True)
+
+# 12-13 comparison 0.05 0.1
+# plot_folders(['12_01_2019_split_01', '12_01_2019_split_005', '13_01_2019_split_01', '13_01_2019_split_005'], 'val_acc', zoom=False, mode=Mode.ORIGINAL)
+# plot_folders(['12_01_2019_split_01', '12_01_2019_split_005', '13_01_2019_split_01', '13_01_2019_split_005'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+# 12-13 comparison 0.2 0.8
+# plot_folders(['12_01_2019_split_02', '12_01_2019_split_08', '13_01_2019_split_02', '13_01_2019_split_08'], 'val_acc', zoom=False, mode=Mode.ORIGINAL)
+# plot_folders(['12_01_2019_split_02', '12_01_2019_split_08', '13_01_2019_split_02', '13_01_2019_split_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
