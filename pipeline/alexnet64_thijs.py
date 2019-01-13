@@ -138,7 +138,7 @@ class AlexNet:
         return history
 
     def train_network_with_generator(self, epochs, create_plots=True, save_model=True, save_csv=True):
-        batch_size = 15
+        batch_size = 8
         history = self.network.fit_generator(self.datagen.flow(self.x_train, self.y_train, batch_size=batch_size),
                                              steps_per_epoch=int(np.ceil(900 / float(batch_size))),
                                              epochs=epochs, verbose=2,
@@ -203,11 +203,12 @@ class AlexNet:
 if __name__ == '__main__':
     # np.random.seed(1000)
 
-    epochs = 500
+    epochs = 10
     lr = 0.00001  # 0.00001 best till now
-    (x_train, y_train), (x_test, y_test) = load_data(base_path='../other_GANS/datasets/swedish_np/')
+    from pipeline import split_data
+    x_train, y_train, x_test, y_test = split_data(split=0.1)
 
     alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr, folder='test/')
 
-    alexnet.train_network_with_generator(epochs=epochs)
+    alexnet.train_network_with_generator(epochs=epochs, save_csv=False, save_model=False)
     # alexnet.sample_transformed_x()

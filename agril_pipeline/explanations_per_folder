@@ -1,6 +1,6 @@
 09_01_2019 half run only generated
 10_01_2019 normal run
-11_01_2019 100000 gan epochs 0.7 split 600 alexnet epochs
+12_01_2019 100000 gan epochs 0.7 split 600 alexnet epochs
 
 Ideas:
 Train longer!(classifier and generator)

@@ -5,4 +5,5 @@
 01_01_2019 is training alexnets with only generated training data
 09_01_2019 half run only generated same but with jarvins classifier
 10_01_2019 everythinh with jarvins classifier
-11_01_2019 thijs classifier with 64*64 dense input and 600 epochs on alexnet, also lower the batch_size to 15
+12_01_2019 thijs classifier with 64*64 dense input and 600 epochs on alexnet, also lower the batch_size to 15
+13_01_2019 thijs classifier with ¨¨ also lower the batch_size to 8
