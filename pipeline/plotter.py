@@ -3,7 +3,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from enum import Enum
-
+from scipy.stats import ttest_ind
 
 class Mode(Enum):
     AUGMENTED = 1
@@ -67,19 +67,18 @@ def print_folder(folder_name, key):
         original_maxes = np.array([sum(history[key][-50:])/50 for history in original_histories])*100
 
     folder_string = '_'.join(folder_name.split('_')[:2]) + '_' + '_'.join(folder_name.split('_')[-2:])
-    print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}".format(folder_string,
+    print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}".format(folder_string,
                                                               np.mean(augmented_maxes),
                                                               np.std(augmented_maxes),
                                                               np.mean(original_maxes),
                                                               np.std(original_maxes),
-                                                              np.mean(augmented_maxes)-np.mean(original_maxes)))
-
+                                                              np.mean(augmented_maxes-original_maxes[:augmented_maxes.shape[0]]), np.std(augmented_maxes-original_maxes[:augmented_maxes.shape[0]])))
 
 def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BOTH):
     legend = []
     epochs = 0
     colors = ['r', 'g', 'b', 'c', 'y', 'm', 'k']
-    print('\n\t\t\t\t\taugmented\toriginal\tdifference')
+    print('\n\t\t\taugmented\toriginal\tdifference')
     for folder_name, color in zip(folder_names, colors):
         print_folder(folder_name, key)
         augmented_hist, original_hist = average_folder(folder_name)
@@ -144,3 +143,6 @@ plot_folders(['13_01_2019_split_01', '13_01_2019_split_02', '13_01_2019_split_00
 # 12-13 comparison 0.2 0.8
 # plot_folders(['12_01_2019_split_02', '12_01_2019_split_08', '13_01_2019_split_02', '13_01_2019_split_08'], 'val_acc', zoom=False, mode=Mode.ORIGINAL)
 # plot_folders(['12_01_2019_split_02', '12_01_2019_split_08', '13_01_2019_split_02', '13_01_2019_split_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+
+# 14_01_2019 overview
+plot_folders(['14_01_2019_split_01', '14_01_2019_split_02', '14_01_2019_split_005', '14_01_2019_split_08'], 'val_acc', zoom=True)
