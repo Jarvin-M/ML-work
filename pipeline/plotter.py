@@ -3,7 +3,8 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from enum import Enum
-from scipy.stats import ttest_ind
+from scipy.stats import ttest_rel, ttest_ind
+
 
 class Mode(Enum):
     AUGMENTED = 1
@@ -42,6 +43,8 @@ def get_histories(folder_name):
             augmented_filenames.extend([dirpath + '/' + name for name in filenames if name[:4] == 'out_'])
         if dirpath[-8:] == 'original':
             original_filenames.extend([dirpath + '/' + name for name in filenames if name[:4] == 'out_'])
+    augmented_filenames.sort()
+    original_filenames.sort()
     augmented_histories = [read_file(file_name) for file_name in augmented_filenames]
     original_histories = [read_file(file_name) for file_name in original_filenames]
 
@@ -67,18 +70,24 @@ def print_folder(folder_name, key):
         original_maxes = np.array([sum(history[key][-50:])/50 for history in original_histories])*100
 
     folder_string = '_'.join(folder_name.split('_')[:2]) + '_' + '_'.join(folder_name.split('_')[-2:])
-    print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}".format(folder_string,
-                                                              np.mean(augmented_maxes),
-                                                              np.std(augmented_maxes),
-                                                              np.mean(original_maxes),
-                                                              np.std(original_maxes),
-                                                              np.mean(augmented_maxes-original_maxes[:augmented_maxes.shape[0]]), np.std(augmented_maxes-original_maxes[:augmented_maxes.shape[0]])))
+    differences = augmented_maxes-original_maxes[:augmented_maxes.shape[0]]
+    two_sided_pvalue = ttest_rel(augmented_maxes, original_maxes[:augmented_maxes.shape[0]]).pvalue
+    print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.5f}".format(folder_string,
+                                                                             np.mean(augmented_maxes),
+                                                                             np.std(augmented_maxes),
+                                                                             np.mean(original_maxes),
+                                                                             np.std(original_maxes),
+                                                                             np.mean(differences),
+                                                                             np.std(differences),
+                                                                             two_sided_pvalue
+                                                                             ))
+
 
 def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BOTH):
     legend = []
     epochs = 0
     colors = ['r', 'g', 'b', 'c', 'y', 'm', 'k']
-    print('\n\t\t\taugmented\toriginal\tdifference')
+    print('\n\t\t\t\t\taugmented\toriginal\tdifference\tp-value')
     for folder_name, color in zip(folder_names, colors):
         print_folder(folder_name, key)
         augmented_hist, original_hist = average_folder(folder_name)
@@ -96,7 +105,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
     plt.ylabel(y_label)
     plt.xlabel('epoch')
     plt.legend(legend, loc='lower right')
-    plt.show()
+    #plt.show()
     plt.close()
 
 # 26_12_2018 overview
@@ -135,7 +144,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_005', '12_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 13_01_2019 overview
-plot_folders(['13_01_2019_split_01', '13_01_2019_split_02', '13_01_2019_split_005', '13_01_2019_split_08'], 'val_acc', zoom=True)
+# plot_folders(['13_01_2019_split_01', '13_01_2019_split_02', '13_01_2019_split_005', '13_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 12-13 comparison 0.05 0.1
 # plot_folders(['12_01_2019_split_01', '12_01_2019_split_005', '13_01_2019_split_01', '13_01_2019_split_005'], 'val_acc', zoom=False, mode=Mode.ORIGINAL)

@@ -28,7 +28,6 @@ class ACGAN():
 
         self.x_train = x_train
         self.y_train = y_train
-        self.old_y_train = np.copy(y_train)
         self.folder = folder
         self.run_nr = run_nr
         self.print_intermediate_images = print_intermediate_images
@@ -141,7 +140,7 @@ class ACGAN():
         return Model(img, [validity, label])
 
     def train(self, epochs, batch_size=128):
-        self.y_train = self.y_train.reshape(-1, 1)  # [1, 0, 14] -> [[1], [0], [14]]
+        local_y_train = np.copy(self.y_train).reshape(-1, 1)  # [1, 0, 14] -> [[1], [0], [14]]
 
         datagenerator = ImageDataGenerator(
             rotation_range=4,  # randomly rotate images in the range (degrees, 0 to 180)
@@ -151,7 +150,7 @@ class ACGAN():
             vertical_flip=False,  # randomly flip images
             channel_shift_range=0.05  # Slightly changes the colors
         )
-        datagen_iterator = datagenerator.flow(self.x_train, self.y_train, batch_size=batch_size, shuffle=True)
+        datagen_iterator = datagenerator.flow(self.x_train, local_y_train, batch_size=batch_size, shuffle=True)
 
         # Adversarial ground truths
         valid = np.ones((batch_size, 1))
@@ -276,7 +275,7 @@ class ACGAN():
 
     def generate_images_for_class(self, image_class, amount, sample_from_x_train=False):
         if sample_from_x_train:
-            class_images = self.x_train[np.where(self.old_y_train == image_class)]
+            class_images = self.x_train[np.where(self.y_train == image_class)]
             sampled_idxs = np.random.randint(0, class_images.shape[0], amount)
             return class_images[sampled_idxs]
 

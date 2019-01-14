@@ -91,7 +91,7 @@ class Pipeline:
         self.hashtag_print('Generating extra training data using the trained ACGAN.')
         x_train_generated, y_train_generated = gan.generate_dataset(size_per_class=200 if only_generated
                                                                     else int(x_train.shape[0]/15)*2,
-                                                                    replace_collapsed_classes=True)
+                                                                    replace_collapsed_classes=(not only_generated))
         gan.delete()
 
         # Train on only original dataset
