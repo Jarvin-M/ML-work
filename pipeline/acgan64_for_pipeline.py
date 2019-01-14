@@ -276,7 +276,9 @@ class ACGAN():
     def generate_images_for_class(self, image_class, amount, sample_from_x_train=False):
         if sample_from_x_train:
             class_images = self.x_train[np.where(self.y_train == image_class)]
+            print(class_images.shape)
             sampled_idxs = np.random.randint(0, class_images.shape[0], amount)
+            print(sampled_idxs.shape)
             return class_images[sampled_idxs]
 
         noise = np.random.normal(0, 1, (amount, 100))
