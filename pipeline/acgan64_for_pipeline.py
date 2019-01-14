@@ -28,6 +28,7 @@ class ACGAN():
 
         self.x_train = x_train
         self.y_train = y_train
+        self.old_y_train = np.copy(y_train)
         self.folder = folder
         self.run_nr = run_nr
         self.print_intermediate_images = print_intermediate_images
@@ -275,10 +276,8 @@ class ACGAN():
 
     def generate_images_for_class(self, image_class, amount, sample_from_x_train=False):
         if sample_from_x_train:
-            class_images = self.x_train[np.where(self.y_train == image_class)]
-            print(class_images.shape)
+            class_images = self.x_train[np.where(self.old_y_train == image_class)]
             sampled_idxs = np.random.randint(0, class_images.shape[0], amount)
-            print(sampled_idxs.shape)
             return class_images[sampled_idxs]
 
         noise = np.random.normal(0, 1, (amount, 100))
@@ -292,7 +291,6 @@ class ACGAN():
         for image_class in range(self.num_classes):
             class_collapsed = True  # self.average_class_difference(image_class) < 0.05
             generated = self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)
-            print(self.x_train.shape)
             print(generated.shape)
             if images is None:
                 images = generated
