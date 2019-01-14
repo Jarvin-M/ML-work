@@ -34,7 +34,7 @@ def average_history(histories):
     return avg_history
 
 
-def read_folder(folder_name):
+def get_histories(folder_name):
     augmented_filenames = []
     original_filenames = []
     for (dirpath, dirnames, filenames) in walk(folder_name):
@@ -45,15 +45,44 @@ def read_folder(folder_name):
     augmented_histories = [read_file(file_name) for file_name in augmented_filenames]
     original_histories = [read_file(file_name) for file_name in original_filenames]
 
+    return augmented_histories, original_histories
+
+
+def average_folder(folder_name):
+    augmented_histories, original_histories = get_histories(folder_name)
     return average_history(augmented_histories), average_history(original_histories)
+
+
+def print_folder(folder_name, key):
+    augmented_histories, original_histories = get_histories(folder_name)
+    mode = 1
+    if mode == 1:  # Best performance for each run
+        augmented_maxes = np.array([max(history[key]) for history in augmented_histories])*100
+        original_maxes = np.array([max(history[key]) for history in original_histories])*100
+    elif mode == 2:  # Last performance for each run
+        augmented_maxes = np.array([history[key][-1] for history in augmented_histories])*100
+        original_maxes = np.array([history[key][-1] for history in original_histories])*100
+    else:  # average last 50 performances for each run
+        augmented_maxes = np.array([sum(history[key][-50:])/50 for history in augmented_histories])*100
+        original_maxes = np.array([sum(history[key][-50:])/50 for history in original_histories])*100
+
+    folder_string = '_'.join(folder_name.split('_')[:2]) + '_' + '_'.join(folder_name.split('_')[-2:])
+    print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}".format(folder_string,
+                                                              np.mean(augmented_maxes),
+                                                              np.std(augmented_maxes),
+                                                              np.mean(original_maxes),
+                                                              np.std(original_maxes),
+                                                              np.mean(augmented_maxes)-np.mean(original_maxes)))
 
 
 def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BOTH):
     legend = []
     epochs = 0
     colors = ['r', 'g', 'b', 'c', 'y', 'm', 'k']
+    print('\n\t\t\t\t\taugmented\toriginal\tdifference')
     for folder_name, color in zip(folder_names, colors):
-        augmented_hist, original_hist = read_folder(folder_name)
+        print_folder(folder_name, key)
+        augmented_hist, original_hist = average_folder(folder_name)
         experiment_name = folder_name  # ' '.join(folder_name.split('_')[-2:])
         if mode == Mode.AUGMENTED or mode == Mode.BOTH and augmented_hist:
             plt.plot(augmented_hist[key], color)
@@ -104,7 +133,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 # plot_folders(['10_01_2019_split_01', '10_01_2019_split_02', '10_01_2019_split_005', '10_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 12_01_2019 overview
-# plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_005', '12_01_2019_split_08'], 'val_acc', zoom=True)
+plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_005', '12_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 13_01_2019 overview
 plot_folders(['13_01_2019_split_01', '13_01_2019_split_02', '13_01_2019_split_005', '13_01_2019_split_08'], 'val_acc', zoom=True)
