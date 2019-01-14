@@ -289,10 +289,12 @@ class ACGAN():
         labels = []
         for image_class in range(self.num_classes):
             class_collapsed = self.average_class_difference(image_class) < 0.05
+            generated = self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)
+            print(generated.shape)
             if images is None:
-                images = self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)
+                images = generated
             else:
-                images = np.concatenate((images, self.generate_images_for_class(image_class, size_per_class, class_collapsed and replace_collapsed_classes)))
+                images = np.concatenate((images, generated))
             labels += [image_class] * size_per_class
 
         # shuffle the dataset
