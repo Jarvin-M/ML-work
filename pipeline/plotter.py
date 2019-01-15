@@ -105,7 +105,7 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
     plt.ylabel(y_label)
     plt.xlabel('epoch')
     plt.legend(legend, loc='lower right')
-    #plt.show()
+    plt.show()
     plt.close()
 
 # 26_12_2018 overview
