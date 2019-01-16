@@ -69,7 +69,7 @@ class Pipeline:
             self.hashtag_print('Run {}:'.format(run))
             self.run(run_nr=str(run), **kwargs)
 
-    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, run_nr='0', only_generated=False):
+    def run(self, split=.8, gan_epochs=30000, alexnet_epochs=300, alexnet_lr=0.00001, alexnet_decay=0, run_nr='0', only_generated=False):
         """
         1. Split the data according to a float split
         2. Train the ACGAN on the training data for gan_epochs amount of epochs, 1 sample image is saved at the end of
@@ -98,13 +98,14 @@ class Pipeline:
         if not only_generated:
             self.hashtag_print('Training AlexNet on original training data.')
             self.train_alexnet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=alexnet_lr,
+                               decay=alexnet_decay,
                                epochs=alexnet_epochs, folder='{}original/'.format(self.folder), run_nr=run_nr)
 
         # Train on augmented dataset
         self.hashtag_print('Training AlexNet on augmented data.')
         self.train_alexnet(x_train=x_train_generated if only_generated else np.concatenate((x_train, x_train_generated)),
                            y_train=y_train_generated if only_generated else np.concatenate((y_train, y_train_generated)),
-                           x_test=x_test, y_test=y_test, lr=alexnet_lr, epochs=alexnet_epochs,
+                           x_test=x_test, y_test=y_test, lr=alexnet_lr, decay=alexnet_decay, epochs=alexnet_epochs,
                            folder='{}augmented/'.format(self.folder), run_nr=run_nr)
         del x_train_generated
         del y_train_generated
@@ -120,8 +121,8 @@ class Pipeline:
         return gan
 
     @staticmethod
-    def train_alexnet(x_train, y_train, x_test, y_test, epochs, lr, folder, run_nr):
-        alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr,
+    def train_alexnet(x_train, y_train, x_test, y_test, epochs, lr, decay, folder, run_nr):
+        alexnet = AlexNet(x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, lr=lr, decay=decay,
                           folder=folder, run_nr=run_nr)
         alexnet.train_network_with_generator(epochs=epochs, save_model=False)
         alexnet.delete()
@@ -139,4 +140,4 @@ class Pipeline:
 if __name__ == '__main__':
     split = float(sys.argv[1])
     pipe = Pipeline(folder="{}_split_{}".format(datetime.now().strftime("%d_%m_%Y"), str(split).replace('.', '')))
-    pipe.n_runs(n=6, split=split, gan_epochs=50000, alexnet_epochs=600,  alexnet_lr=0.00001)
+    pipe.n_runs(n=6, split=split, gan_epochs=50000, alexnet_epochs=600,  alexnet_lr=0.0001, alexnet_decay=0.09)

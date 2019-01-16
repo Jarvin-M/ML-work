@@ -28,7 +28,7 @@ def load_data(base_path):
 
 
 class AlexNet:
-    def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, folder='', run_nr=''):
+    def __init__(self, x_train, y_train, x_test, y_test, lr=0.00001, decay=0, folder='', run_nr=''):
         """
         :param x_train: The training data images
         :param y_train: The trainging data labels
@@ -41,9 +41,10 @@ class AlexNet:
         self.folder = folder
         self.run_nr = run_nr
         self.lr = lr
+        self.decay = decay
         # build and compile the network
         self.network = self.build_network()
-        optimizer = keras.optimizers.Adam(lr=self.lr)
+        optimizer = keras.optimizers.Adam(lr=self.lr, decay=self.decay)
         self.network.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # load data
