@@ -1,0 +1,5 @@
+split: 0.2
+gan_epochs: 50000
+alexnet_epochs: 600
+alexnet_lr: 1e-05
+only_generated: True
