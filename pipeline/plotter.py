@@ -58,7 +58,7 @@ def average_folder(folder_name):
 
 def print_folder(folder_name, key):
     augmented_histories, original_histories = get_histories(folder_name)
-    mode = 1
+    mode = 2
     if mode == 1:  # Best performance for each run
         augmented_maxes = np.array([max(history[key]) for history in augmented_histories])*100
         original_maxes = np.array([max(history[key]) for history in original_histories])*100
@@ -66,17 +66,18 @@ def print_folder(folder_name, key):
         augmented_maxes = np.array([history[key][-1] for history in augmented_histories])*100
         original_maxes = np.array([history[key][-1] for history in original_histories])*100
     else:  # average last 50 performances for each run
-        augmented_maxes = np.array([sum(history[key][-50:])/50 for history in augmented_histories])*100
-        original_maxes = np.array([sum(history[key][-50:])/50 for history in original_histories])*100
+        average_over = 50
+        augmented_maxes = np.array([sum(history[key][-average_over:])/average_over for history in augmented_histories])*100
+        original_maxes = np.array([sum(history[key][-average_over:])/average_over for history in original_histories])*100
 
     folder_string = '_'.join(folder_name.split('_')[:2]) + '_' + '_'.join(folder_name.split('_')[-2:])
-    differences = augmented_maxes-original_maxes[:augmented_maxes.shape[0]]
-    two_sided_pvalue = ttest_rel(augmented_maxes, original_maxes[:augmented_maxes.shape[0]]).pvalue
+    differences = augmented_maxes-original_maxes[:augmented_maxes.shape[0]] if original_maxes != [] else 0
+    two_sided_pvalue = ttest_rel(augmented_maxes, original_maxes[:augmented_maxes.shape[0]]).pvalue if original_maxes != [] else 0
     print("{}\t\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.2f}±{:.2f}\t{:.5f}".format(folder_string,
                                                                              np.mean(augmented_maxes),
                                                                              np.std(augmented_maxes),
-                                                                             np.mean(original_maxes),
-                                                                             np.std(original_maxes),
+                                                                             np.mean(original_maxes) if original_maxes != [] else 0,
+                                                                             np.std(original_maxes) if original_maxes != [] else 0,
                                                                              np.mean(differences),
                                                                              np.std(differences),
                                                                              two_sided_pvalue
@@ -155,3 +156,12 @@ plot_folders(['12_01_2019_split_01', '12_01_2019_split_02', '12_01_2019_split_00
 
 # 14_01_2019 overview
 plot_folders(['14_01_2019_split_01', '14_01_2019_split_02', '14_01_2019_split_005', '14_01_2019_split_08'], 'val_acc', zoom=True)
+
+# 15_01_2019 overview
+plot_folders(['15_01_2019_split_01', '15_01_2019_split_02', '15_01_2019_split_005', '15_01_2019_split_08'], 'val_acc', zoom=True)
+
+# 15_01_2019_og overview
+plot_folders(['16_01_2019_split_og_01', '16_01_2019_split_og_02', '16_01_2019_split_og_005', '16_01_2019_split_og_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+
+# final overview
+plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=True)

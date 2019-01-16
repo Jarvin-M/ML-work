@@ -8,3 +8,5 @@
 12_01_2019 thijs classifier with 64*64 dense input and 600 epochs on alexnet, also lower the batch_size to 15
 13_01_2019 thijs classifier with ¨¨ also lower the batch_size to 8
 14_01_2019 batch_size back to 15, replace collapsed classes with original training data
+15_01_2019 """"
+16_01_2019_og """" only original data
