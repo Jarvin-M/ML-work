@@ -155,13 +155,16 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 # plot_folders(['12_01_2019_split_02', '12_01_2019_split_08', '13_01_2019_split_02', '13_01_2019_split_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
 
 # 14_01_2019 overview
-plot_folders(['14_01_2019_split_01', '14_01_2019_split_02', '14_01_2019_split_005', '14_01_2019_split_08'], 'val_acc', zoom=True)
+# plot_folders(['14_01_2019_split_01', '14_01_2019_split_02', '14_01_2019_split_005', '14_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 15_01_2019 overview
-plot_folders(['15_01_2019_split_01', '15_01_2019_split_02', '15_01_2019_split_005', '15_01_2019_split_08'], 'val_acc', zoom=True)
+# plot_folders(['15_01_2019_split_01', '15_01_2019_split_02', '15_01_2019_split_005', '15_01_2019_split_08'], 'val_acc', zoom=False)
 
 # final overview
-plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=True)
+plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=False)
 
 # 16_01_2019_og overview
-plot_folders(['16_01_2019_split_og_01', '16_01_2019_split_og_02', '16_01_2019_split_og_005', '16_01_2019_split_og_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+# plot_folders(['16_01_2019_split_og_01', '16_01_2019_split_og_02', '16_01_2019_split_og_005', '16_01_2019_split_og_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+
+# 17_01_2019 overview
+plot_folders(['17_01_2019_split_005'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
