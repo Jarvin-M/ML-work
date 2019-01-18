@@ -84,27 +84,29 @@ def print_folder(folder_name, key):
                                                                              ))
 
 
-def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BOTH):
+def plot_folders(folder_names, key, y_label='Accuracy (%)', zoom=False, mode=Mode.BOTH):
     legend = []
     epochs = 0
     colors = ['r', 'g', 'b', 'c', 'y', 'm', 'k']
+    nice_plot = key == 'val_acc'
     print('\n\t\t\t\t\taugmented\toriginal\tdifference\tp-value')
     for folder_name, color in zip(folder_names, colors):
         print_folder(folder_name, key)
         augmented_hist, original_hist = average_folder(folder_name)
-        experiment_name = folder_name  # ' '.join(folder_name.split('_')[-2:])
+        percentage = "{}.{}".format(folder_name.split('_')[-1][:1], folder_name.split('_')[-1][1:])
+        experiment_name = percentage if nice_plot else folder_name
         if mode == Mode.AUGMENTED or mode == Mode.BOTH and augmented_hist:
             plt.plot(augmented_hist[key], color)
-            legend.append(experiment_name+" augmented")
+            legend.append("{} augmented".format(experiment_name))
         if mode == Mode.ORIGINAL or mode == Mode.BOTH and original_hist:
             plt.plot(original_hist[key], color+'--')
-            legend.append(experiment_name+" original")
+            legend.append("{} original".format(experiment_name))
         epochs = len(augmented_hist[key] if augmented_hist else original_hist[key])
 
     plt.axis(xmin=epochs*3/4 if zoom else 0, xmax=epochs-1, ymin=0.8 if zoom else 0, ymax=1.)
-    plt.title(key)
+    plt.title("Validation accuracy" if nice_plot else key)
     plt.ylabel(y_label)
-    plt.xlabel('epoch')
+    plt.xlabel('Epoch')
     plt.legend(legend, loc='lower right')
     plt.show()
     plt.close()
@@ -161,10 +163,10 @@ def plot_folders(folder_names, key, y_label='accuracy', zoom=False, mode=Mode.BO
 # plot_folders(['15_01_2019_split_01', '15_01_2019_split_02', '15_01_2019_split_005', '15_01_2019_split_08'], 'val_acc', zoom=False)
 
 # final overview
-plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=False)
+plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 16_01_2019_og overview
 # plot_folders(['16_01_2019_split_og_01', '16_01_2019_split_og_02', '16_01_2019_split_og_005', '16_01_2019_split_og_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
 
 # 17_01_2019 overview
-plot_folders(['17_01_2019_split_005'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+plot_folders(['17_01_2019_split_01', '17_01_2019_split_02', '17_01_2019_split_005', '17_01_2019_split_08'], 'val_acc', zoom=False)

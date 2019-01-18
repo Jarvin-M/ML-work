@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-x = np.load('./datasets/swedish_leaf32x32pix_images.npy')
-y = np.load('./datasets/swedish_leaf32x32pix_labels.npy')
+x = np.load('./datasets/swedish_np/swedish_leaf64x64pix_all_images.npy')
+y = np.load('./datasets/swedish_np/swedish_leaf64x64pix_all_labels.npy')
 
 fig, axs = plt.subplots(1, 15)
 for cls in range(1, 16):
