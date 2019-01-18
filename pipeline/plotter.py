@@ -69,7 +69,7 @@ def print_folder(folder_name, key):
         average_over = 50
         augmented_maxes = np.array([sum(history[key][-average_over:])/average_over for history in augmented_histories])*100
         original_maxes = np.array([sum(history[key][-average_over:])/average_over for history in original_histories])*100
-
+    # print(max(augmented_maxes), max(original_maxes) if original_maxes != [] else 0)
     folder_string = '_'.join(folder_name.split('_')[:2]) + '_' + '_'.join(folder_name.split('_')[-2:])
     differences = augmented_maxes-original_maxes[:augmented_maxes.shape[0]] if original_maxes != [] else 0
     two_sided_pvalue = ttest_rel(augmented_maxes, original_maxes[:augmented_maxes.shape[0]]).pvalue if original_maxes != [] else 0
@@ -166,7 +166,10 @@ def plot_folders(folder_names, key, y_label='Accuracy (%)', zoom=False, mode=Mod
 plot_folders(['f_01_2019_split_01', 'f_01_2019_split_02', 'f_01_2019_split_005', 'f_01_2019_split_08'], 'val_acc', zoom=True)
 
 # 16_01_2019_og overview
-# plot_folders(['16_01_2019_split_og_01', '16_01_2019_split_og_02', '16_01_2019_split_og_005', '16_01_2019_split_og_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
+plot_folders(['16_01_2019_split_onge_01', '16_01_2019_split_onge_02', '16_01_2019_split_onge_005', '16_01_2019_split_onge_08'], 'val_acc', zoom=False, mode=Mode.AUGMENTED)
 
 # 17_01_2019 overview
 # plot_folders(['17_01_2019_split_01_meh', '17_01_2019_split_02_meh', '17_01_2019_split_005_meh', '17_01_2019_split_08_meh'], 'val_acc', zoom=False)
+
+# 18_01_2019 overview
+# plot_folders(['18_01_2019_split_005'], 'val_acc', zoom=False)
