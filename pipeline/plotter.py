@@ -171,5 +171,5 @@ plot_folders(['16_01_2019_split_onge_01', '16_01_2019_split_onge_02', '16_01_201
 # 17_01_2019 overview
 # plot_folders(['17_01_2019_split_01_meh', '17_01_2019_split_02_meh', '17_01_2019_split_005_meh', '17_01_2019_split_08_meh'], 'val_acc', zoom=False)
 
-# 18_01_2019 overview
-# plot_folders(['18_01_2019_split_005'], 'val_acc', zoom=False)
+# 19_01_2019 overview
+plot_folders(['19_01_2019_split_01', '19_01_2019_split_02', '19_01_2019_split_005', '19_01_2019_split_08'], 'val_acc', zoom=True)
